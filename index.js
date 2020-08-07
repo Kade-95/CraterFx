@@ -4,8 +4,19 @@ global.fs = require('fs');
 
 let metadata = {
     styles: [
+        './css/root.css',
+        './css/header.css',
+        './css/main.css',
+        './css/sidebar.css',
+        './css/random.css',
+        './css/dashboard.css',
+        './css/users.css',
+        './css/apps.css',
+        './css/notifications.css',
+        './fontawesome/css/all.css'
     ],
     scripts: {
+        './includes/index.js': { type: 'module' },
     }
 };
 
@@ -15,13 +26,19 @@ global.bcrypt = require('bcrypt');
 global.ObjectId = require('mongodb').ObjectId;
 
 let { PostHandler } = require('./includes/classes/PostHandler');
+let { Extra } = require('./includes/classes/Extra');
+let { View } = require('./includes/classes/View');
 
 let postHandler = new PostHandler();
+let extra = new Extra();
+let view = new View(metadata, 'webapp');
 
-perceptor.createServer(8080,
+let {port, protocol} = perceptor.getCommands('-');
+
+perceptor.createServer(port || 8082,
     params => {
-        params.response.end('Crater API');
-    }, 'https',
+        view.createView(params);
+    }, protocol || 'https',
     { origins: ['*'] },
     {
         key: fs.readFileSync('./permissions/server.key'),
@@ -33,3 +50,5 @@ perceptor.recordSession(24 * 60 * 60 * 1000);
 perceptor.handleRequests = (req, res, form) => {
     postHandler.act(req, res, form);
 }
+
+extra.clearEmptyApps();

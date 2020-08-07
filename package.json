@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^4.0.1",
-    "mongodb": "^3.5.7"
+    "mongodb": "^3.5.9",
+    "save": "^2.4.0"
   },
   "devDependencies": {
     "nodemon": "@2.0.4"

@@ -1,0 +1,58 @@
+#app-details {
+    display: grid;
+    grid-gap: 1em;
+    padding: .5em 1em;
+    align-items: start;
+    overflow: auto;
+}
+
+#app-controls {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: repeat(3, max-content);
+}
+
+#app-controls .icon:hover {
+    color: var(--accient-color);
+    cursor: pointer;
+}
+
+#app-related {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 2em;
+    align-items: start;
+}
+
+.app-title {
+    font-size: 1.2em;
+    color: #333333;
+    text-decoration: underline;
+}
+
+.app-list {
+    display: grid;
+    grid-gap: .5em;
+    padding: .5em;
+    overflow: auto;
+}
+
+.app-list-single {
+    font-size: 1.2em;
+}
+
+.app-list-single:hover {
+    color: var(--accient-color);
+}
+
+.app-list-single-text, .app-list-single .icon {
+    color: inherit;
+    font-size: inherit;
+}
+
+@media(min-width: 700px) {
+    #app-details {
+        grid-template-columns: repeat(2, 1fr);
+        max-height: 500px;
+    }
+}

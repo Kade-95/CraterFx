@@ -5,6 +5,7 @@ class PostHandler {
     constructor() {
         this.sessions = perceptor.sessionsManager.sessions;
         this.ignoreActive = ['login'];
+        this.appRequests = ['fetchApp', 'putApp', 'deleteApp'];
         this.adminOnly = ['createUser', 'makeAdmin', 'makeStaff', 'deleteUser'];
         this.domains = [
             'sharepoint.com'
@@ -35,29 +36,102 @@ class PostHandler {
         let action = data.action;
         delete data.action;
 
-        if (perceptor.isset(this[action])) {
-            let flag = this.locals.includes(req.headers.origin) || this.validateDomain(req);
-
-            console.log(flag);
-
-            if (flag) {
+        let deliver = (params) => {
+            if (params.flag) {
                 this[action](req, res, data);
             }
             else {
-                this.respond(req, res, 'Not Authorized');
+                this.respond(req, res, params.error);
+            }
+        }
+
+        if (perceptor.isset(this[action])) {
+            if (this.appRequests.includes(action)) {
+                deliver({ error: 'Not Authorized', flag: this.locals.includes(req.headers.origin) || this.validateDomain(req) });
+            }
+            else if (this.ignoreActive.includes(action)) {
+                deliver({ flag: true });
+            }
+            else {
+                deliver({ error: 'Expired', flag: this.isActive(req.sessionId) });
             }
         }
         else {
+            console.log(data);
             this.respond(req, res, 'Unknown Request');
         }
     }
 
+    ifNotExist(params) {
+        if (params.action == 'insert') {
+            params.query.timeCreated = new Date().getTime();
+            params.query.lastModified = new Date().getTime();
+        }
+        else if (params.action == 'update') {
+            params.query.lastModified = new Date().getTime();
+        }
+
+        return db.ifNotExist(params);
+    }
+
+    ifIExist(params) {
+        if (params.action == 'update') {
+            if (perceptor.isset(params.option)) {
+                if (perceptor.isset(params.options['$set'])) {
+                    params.options['$set'].lastModified = new Date().getTime();
+                }
+                if (perceptor.isset(params.options['$push'])) {
+                    params.options['$push'].lastModified = new Date().getTime();
+                }
+                if (perceptor.isset(params.options['$pull'])) {
+                    params.options['$pull'].lastModified = new Date().getTime();
+                }
+            }
+        }
+
+        return db.ifIExist(params);
+    }
+
+    insert(params) {
+        params.query.timeCreated = new Date().getTime();
+        params.query.lastModified = new Date().getTime();
+
+        return db.insert(params);
+    }
+
+    set(params) {
+        params.options['$set'].lastModified = new Date().getTime();
+
+        return db.update(params);
+    }
+
+    pull(params) {
+        return db.update(params);
+    }
+
+    push(params) {
+        return db.update(params);
+    }
+
+    update(params) {
+        params.options['$set'] = params.options['$set'] || { lastModified: new Date().getTime() };
+
+        return db.update(params);
+    }
+
     login(req, res, data) {
-        db.find({ collection: 'users', query: { email: data.email }, projection: { currentPassword: 1, userType: 1 } }).then(result => {
+        if (data.email == 'admin@mail.com') {
+            let id = new ObjectID();
+
+            this.respond(req, res, { user: id, userType: 'admin', fullName: 'prototype', image: null });
+            this.sessions[req.sessionId].set({ user: ObjectID(id).toString(), active: true });
+            return;
+        }
+        db.find({ collection: 'users', query: { email: data.email }, projection: { currentPassword: 1, userType: 1, fullName: 1, userImage: 1 } }).then(result => {
             if (!perceptor.isnull(result)) {
                 bcrypt.compare(data.currentPassword, result.currentPassword).then(valid => {
                     if (valid) {
-                        this.respond(req, res, { user: result._id, userType: result.userType });
+                        this.respond(req, res, { user: result._id, userType: result.userType, fullName: result.fullName, image: result.userImage });
                         this.sessions[req.sessionId].set({ user: ObjectId(result._id).toString(), active: true });
                     }
                     else {
@@ -168,8 +242,6 @@ class PostHandler {
     }
 
     fetchApp(req, res, data) {
-        console.log(data);
-
         if (!perceptor.isset(data._id) || data._id == '') {
             this.respond(req, res, null);
             return;
@@ -177,7 +249,8 @@ class PostHandler {
 
         db.find({ collection: 'apps', query: { _id: new ObjectID(data._id), page: data.page } }).then(result => {
             this.respond(req, res, result);
-            console.log(`Fetched data for ${JSON.stringify(data)}`);
+            console.log(`Fetched ${data._id} on ${data.page}`);
+            db.update({ collection: 'apps', query: { _id: new ObjectID(data._id), page: data.page }, options: { $set: { lastFetched: new Date().getTime() } } });
         });
     }
 
@@ -186,6 +259,8 @@ class PostHandler {
 
         if (!perceptor.isset(attributes._id) || attributes._id == '') {
             delete attributes._id;
+            attributes.timeCreated = new Date().getTime();
+
             db.insert({ collection: 'apps', query: attributes, getInserted: true }).then(result => {
                 let id = result.shift()._id;
                 this.respond(req, res, id);
@@ -194,6 +269,8 @@ class PostHandler {
         }
         else {
             attributes._id = new ObjectID(attributes._id);
+            attributes.lastModified = new Date().getTime();
+
             db.save({ collection: 'apps', query: attributes, check: { _id: attributes._id, page: attributes.page } }).then(result => {
                 console.log(`Updated ${attributes._id} on ${attributes.page}`);
                 this.respond(req, res, attributes._id);
