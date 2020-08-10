@@ -13,7 +13,7 @@ class Extra {
 
             setInterval(() => {
                 this.removeEmptyApps();
-            }, perceptor.secondsInDays(1) * 1000);
+            }, kerds.secondsInDays(1) * 1000);
         });
     }
 
@@ -24,13 +24,13 @@ class Extra {
         db.find({ collection: 'apps', query: {}, many: true, projection: { id: 1, page: 1, lastFetched: 1 } })
             .then(apps => {
                 for (let app of apps) {
-                    if (!perceptor.isset(this.siteApps[app.page])) {//init site
+                    if (!kerds.isset(this.siteApps[app.page])) {//init site
                         this.siteApps[app.page] = [];
                     }
                     appDetails = { _id: app._id };
-                    if (perceptor.isset(app.lastFetched)) {//check fetched app and set day for app and site
-                        appDetails.dayFetched = perceptor.dateValue(perceptor.date(app.lastFetched));
-                        if (!perceptor.isset(this.siteApps[app.page].dayFetched) || appDetails.dayFetched > this.siteApps[app.page].dayFetched) {
+                    if (kerds.isset(app.lastFetched)) {//check fetched app and set day for app and site
+                        appDetails.dayFetched = kerds.dateValue(kerds.date(app.lastFetched));
+                        if (!kerds.isset(this.siteApps[app.page].dayFetched) || appDetails.dayFetched > this.siteApps[app.page].dayFetched) {
                             this.siteApps[app.page].dayFetched = appDetails.dayFetched;
                         }
                     }
@@ -44,9 +44,9 @@ class Extra {
             })
             .then(() => {
                 for (let site in this.siteApps) {
-                    if (perceptor.isset(this.siteApps[site].dayFetched)) {//get sites with fetched date
+                    if (kerds.isset(this.siteApps[site].dayFetched)) {//get sites with fetched date
                         for (let app of this.siteApps[site]) {
-                            if (!perceptor.isset(app.dayFetched) || this.siteApps[site].dayFetched > app.dayFetched) {//remove all deleted appss
+                            if (!kerds.isset(app.dayFetched) || this.siteApps[site].dayFetched > app.dayFetched) {//remove all deleted appss
                                 db.delete({ collection: 'apps', query: { _id: new ObjectId(app._id) } });
                                 count++;
                             }

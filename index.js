@@ -1,5 +1,5 @@
 'use strict'
-let { Perceptor, Database } = require('./Perceptors/back');
+let { Kerds, Database } = require('kerds');
 global.fs = require('fs');
 
 let metadata = {
@@ -20,7 +20,7 @@ let metadata = {
     }
 };
 
-global.perceptor = new Perceptor({ server: { address: "mongodb://localhost:27017/", name: 'craterapi' } });
+global.kerds = new Kerds({ server: { address: "mongodb://localhost:27017/", name: 'craterapi' } });
 global.db = new Database({ address: "mongodb://localhost:27017/", name: 'craterapi' });
 global.bcrypt = require('bcrypt');
 global.ObjectId = require('mongodb').ObjectId;
@@ -33,9 +33,9 @@ let postHandler = new PostHandler();
 let extra = new Extra();
 let view = new View(metadata, 'webapp');
 
-let {port, protocol} = perceptor.getCommands('-');
+let {port, protocol} = kerds.getCommands('-');
 
-perceptor.createServer(port || 8082,
+kerds.createServer(port || 8082,
     params => {
         view.createView(params);
     }, protocol || 'https',
@@ -46,8 +46,8 @@ perceptor.createServer(port || 8082,
     }
 );
 
-perceptor.recordSession(24 * 60 * 60 * 1000);
-perceptor.handleRequests = (req, res, form) => {
+kerds.recordSession(24 * 60 * 60 * 1000);
+kerds.handleRequests = (req, res, form) => {
     postHandler.act(req, res, form);
 }
 

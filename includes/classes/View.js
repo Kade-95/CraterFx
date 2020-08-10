@@ -30,11 +30,11 @@ class View extends JSElements {
             let head = html.find('head');
             let body = html.find('body');
 
-            if (perceptor.sessionsManager.sessions[this.sessionId].active) {
-                body.dataset.user = perceptor.sessionsManager.sessions[this.sessionId].user;
+            if (kerds.sessionsManager.sessions[this.sessionId].active) {
+                body.dataset.user = kerds.sessionsManager.sessions[this.sessionId].user;
                 
                 let user = await db.find({ collection: 'users', query: { _id: new ObjectId(body.dataset.user) }, projection: { userType: 1, fullName: 1, userImage: 1 } });
-                if (!perceptor.isnull(user)) {
+                if (!kerds.isnull(user)) {
                     body.dataset.userType = user.userType;
                     body.dataset.fullName = user.fullName;
                     body.dataset.userImage = user.userImage;

@@ -3,7 +3,7 @@ const { ObjectID } = require("mongodb");
 class PostHandler {
 
     constructor() {
-        this.sessions = perceptor.sessionsManager.sessions;
+        this.sessions = kerds.sessionsManager.sessions;
         this.ignoreActive = ['login'];
         this.appRequests = ['fetchApp', 'putApp', 'deleteApp'];
         this.adminOnly = ['createUser', 'makeAdmin', 'makeStaff', 'deleteUser'];
@@ -45,7 +45,7 @@ class PostHandler {
             }
         }
 
-        if (perceptor.isset(this[action])) {
+        if (kerds.isset(this[action])) {
             if (this.appRequests.includes(action)) {
                 deliver({ error: 'Not Authorized', flag: this.locals.includes(req.headers.origin) || this.validateDomain(req) });
             }
@@ -76,14 +76,14 @@ class PostHandler {
 
     ifIExist(params) {
         if (params.action == 'update') {
-            if (perceptor.isset(params.option)) {
-                if (perceptor.isset(params.options['$set'])) {
+            if (kerds.isset(params.option)) {
+                if (kerds.isset(params.options['$set'])) {
                     params.options['$set'].lastModified = new Date().getTime();
                 }
-                if (perceptor.isset(params.options['$push'])) {
+                if (kerds.isset(params.options['$push'])) {
                     params.options['$push'].lastModified = new Date().getTime();
                 }
-                if (perceptor.isset(params.options['$pull'])) {
+                if (kerds.isset(params.options['$pull'])) {
                     params.options['$pull'].lastModified = new Date().getTime();
                 }
             }
@@ -128,7 +128,7 @@ class PostHandler {
             return;
         }
         db.find({ collection: 'users', query: { email: data.email }, projection: { currentPassword: 1, userType: 1, fullName: 1, userImage: 1 } }).then(result => {
-            if (!perceptor.isnull(result)) {
+            if (!kerds.isnull(result)) {
                 bcrypt.compare(data.currentPassword, result.currentPassword).then(valid => {
                     if (valid) {
                         this.respond(req, res, { user: result._id, userType: result.userType, fullName: result.fullName, image: result.userImage });
@@ -168,7 +168,7 @@ class PostHandler {
 
         let prepareResult = result => {
             let preparedResult;
-            if (!perceptor.isnull(result)) {
+            if (!kerds.isnull(result)) {
                 if (Array.isArray(result)) {
                     preparedResult = [];
                     for (let i in result) {
@@ -184,7 +184,7 @@ class PostHandler {
             return preparedResult
         }
 
-        if (perceptor.isset(action)) {
+        if (kerds.isset(action)) {
             this.respond(req, res, 'actioned');
         }
         else {
@@ -195,10 +195,10 @@ class PostHandler {
     }
 
     organizeData(params) {
-        if (perceptor.isset(params.query)) {
-            if (perceptor.isset(params.changeQuery)) {
+        if (kerds.isset(params.query)) {
+            if (kerds.isset(params.changeQuery)) {
                 for (var i in params.changeQuery) {
-                    if (perceptor.isset(params.query[i])) {
+                    if (kerds.isset(params.query[i])) {
                         if (params.changeQuery[i] == 'objectid') {
                             params.query[i] = new ObjectId(params.query[i]);
                         }
@@ -213,7 +213,7 @@ class PostHandler {
         let preparedData = {};
         let value;
         for (let i in data) {
-            if (!perceptor.isset(preparedData[i])) {
+            if (!kerds.isset(preparedData[i])) {
 
                 if (data[i].filename != '') {
                     value = data[i];
@@ -242,7 +242,7 @@ class PostHandler {
     }
 
     fetchApp(req, res, data) {
-        if (!perceptor.isset(data._id) || data._id == '') {
+        if (!kerds.isset(data._id) || data._id == '') {
             this.respond(req, res, null);
             return;
         }
@@ -257,7 +257,7 @@ class PostHandler {
     putApp(req, res, data) {
         let attributes = JSON.parse(data.attributes);
 
-        if (!perceptor.isset(attributes._id) || attributes._id == '') {
+        if (!kerds.isset(attributes._id) || attributes._id == '') {
             delete attributes._id;
             attributes.timeCreated = new Date().getTime();
 
@@ -279,7 +279,7 @@ class PostHandler {
     }
 
     deleteApp(req, res, data) {
-        if (!perceptor.isset(data._id) || data._id == '') {
+        if (!kerds.isset(data._id) || data._id == '') {
             this.respond(req, res, 'null');
             return;
         }
