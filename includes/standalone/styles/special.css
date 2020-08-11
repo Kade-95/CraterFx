@@ -1,0 +1,148 @@
+.crater-arrow {
+    border-left: 2px solid #fff;
+    border-top: 2px solid #fff;
+    cursor: pointer
+}
+
+.crater-left-arrow {
+    transform: rotate(-45deg);
+    left: 0;
+    margin-left: 5px;
+}
+
+.crater-right-arrow {
+    transform: rotate(-225deg);
+    right: 0;
+    margin-right: 5px;
+}
+
+.crater-up-arrow {
+    transform: rotate(45deg);
+    top: 0;
+    margin-top: 5px;
+}
+
+.crater-down-arrow {
+    transform: rotate(225deg);
+    bottom: 0;
+    margin-bottom: 5px;
+}
+
+.crater-curve{
+    border-radius: 10px;
+}
+
+.crater-center{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+}
+
+.crater-top-right {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1em;
+    padding: .5em;
+}
+
+.crater-pop-up{
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    z-index: 100000;
+    background-color: var(--light-accient-color);
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.crater-pop-up-window{
+    width: 80%;
+    height: 70vh;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    position: relative;
+}
+
+.crater-pop-up-controls{
+    width: 100%;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: flex-end;
+    background-color: black;
+}
+
+.crater-pop-up-controls-button{
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    cursor: pointer;
+    margin: 0.5em;
+}
+
+#crater-pop-up-close:hover{
+    background-color: red;
+}
+
+#crater-pop-up-toggle:hover{
+    background-color: blue;
+}
+
+.crater-pop-up-content{
+    width: 100%;
+    height: inherit;
+    border: none;
+    box-shadow: var(--secondary-shadow);
+}
+
+.crater-background-filter{
+    width: 100%;
+    height: inherit;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.crater-choose{
+    width: fit-content;
+    height: fit-content;
+    padding: 1em;
+    position: fixed;
+    top: 0;
+    margin: 1em;
+    place-self: center;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    background-color: var(--secondary-color);
+}
+
+.crater-choose-control{
+    display: grid;
+    grid-gap: .5em;
+    padding: .5em;
+    margin: 1em;
+    grid-template-columns: repeat(3, max-content);
+    justify-content: left;
+}
+
+.crater ::-webkit-scrollbar {
+    width: 8px;
+    height: 5px;
+}
+
+.crater ::-webkit-scrollbar-thumb {
+    background-color: gray;
+}
+
+.crater ::-webkit-scrollbar-thumb:hover {
+    background: black;
+    transition-duration: .5s;
+}

@@ -1,0 +1,107 @@
+.crater-employee-directory{
+}
+
+.crater-employee-directory-content{
+    width: 100%;
+}
+
+.crater-employee-directory-main-view{
+    position: relative;
+    width: 100%;
+}
+
+.crater-employee-directory-menu{
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    padding: .5em .2em;
+    grid-gap: 1em;
+}
+
+#crater-employee-directory-search-query{
+    min-height: 30px;
+}
+
+.crater-employee-directory-options{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+}
+
+.crater-employee-directory-display{
+    height: 400px;
+    overflow-y: auto;
+    display: grid;
+    grid-gap: .5em;
+    padding: 0em .2em;
+}
+
+.crater-employee-directory-row{
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    grid-gap: 1em;
+    padding: .1em .5em;
+    align-items: center;
+    position: relative;
+    border: 1px solid gray;
+}
+
+.crater-employee-directory-row:hover{
+    box-shadow: var(--accient-shadow);
+    border: none;
+}
+
+.crater-employee-directory-dp{
+    width: 3em;
+    height: 3em;
+    border-radius: 100%;
+    background-color: green;
+    border: 1px solid black;
+}
+
+.crater-employee-directory-details{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;    
+    overflow: hidden;
+}
+
+.crater-employee-directory-name{
+    text-align: left;
+}
+
+.crater-employee-directory-mail{
+    text-align: left;
+}
+
+.crater-employee-directory-job{
+    text-align: left;
+}
+
+.crater-employee-directory-contact{
+    text-align: left;
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    grid-gap: 1em;
+    padding: .1em;
+}
+
+.crater-employee-directory-icon{
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+}
+
+.crater-employee-directory-toggle-view{
+}
+
+.crater-employee-directory-other-details{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    text-align: left;
+}
+
+.crater-employee-directory-hidden-detail{
+    display: inline-grid;
+    grid-template-rows: repeat(2, min-content);
+}

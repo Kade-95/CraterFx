@@ -1,0 +1,26 @@
+:root { --frame-width:400px; }
+:root { --frame-height:400px; }
+
+
+.crater-frame-container{
+    margin: 0 auto;
+}
+
+.crater-frame-container-header-title{
+    padding: 10px;
+    font-size: 1.5em;
+}
+
+.crater-frame-container-header-title-box{
+    /* display: flex; */
+    /* justify-content: right; */
+    background-color: aqua;
+}
+
+.crater-frame-container-image{
+    border: 2px solid #000000;
+    border-radius: 5px;
+    padding: 8px;
+    width: var(--frame-width);
+    height: var(--frame-height);
+}

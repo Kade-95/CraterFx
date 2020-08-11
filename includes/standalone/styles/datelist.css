@@ -1,0 +1,118 @@
+.crater-datelist {
+    box-sizing: border-box;
+    overflow: auto;
+    position: relative;
+}
+
+.crater-datelist-title {
+    display: grid;
+    grid-template-columns: min-content auto;
+    background-color: rgb(14, 180, 185);
+    color: rgb(255, 255, 255);
+    font-size: 2em;
+}
+
+.crater-datelist-title-imgIcon{
+    width: 50px;
+    height: 50px;
+    padding: .2em 1em .2em 1em;
+}
+
+.crater-datelist-title-captionTitle{
+    text-align: start;
+    padding: .2em;
+    font-weight: bold;
+   
+}
+
+.crater-datelist-content-item{
+    display: grid;
+    grid-template-columns: min-content auto;
+    border-bottom: 1px solid lightgray;
+    padding: 1em ;
+    opacity: .8;
+}
+
+.crater-datelist-content-item:hover {
+    opacity: 1;
+}
+
+.crater-datelist-content-item-text{
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    padding: 1em;
+}
+.crater-datelist-content-item-text-box{
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+}
+
+.crater-datelist-content-item-text-main{
+    font-size: 1em;
+    color: lightseagreen;
+    font-family: cursive;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.crater-datelist-content-item-text-subtitle{
+    font-size: .7em;
+    color: rgb(73, 178, 32);
+    font-family: arial;
+    text-align: left;
+}
+
+.crater-datelist-content-item-text-body{
+    font-size: 1em;
+    color: rgb(158, 79, 42);
+    font-family: 'Times New Roman';
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.crater-datelist-content-item-date{
+    display: grid;
+    grid-template-columns: 1fr min-content 1fr;
+    gap: 5px;
+    width: 50px;
+    padding: 1em;
+    text-align: center;
+    position: relative;
+    color: gray;
+}
+.before-stuff::before{
+    content:'';
+    background-color: rgb(98, 165, 165);
+    height: 100%;
+    width: 3px;
+    top: 0;
+    left:0;
+    position: absolute;
+}
+
+.crater-datelist-slash{
+    font-size: 1.4em;
+}
+.crater-datelist-single-day{
+    color: rgb(182, 127, 136);
+    font-size: 2em;
+}
+
+.crater-datelist-single-month{
+    color: rgb(98, 165, 165);
+    font-size: 1.5em;
+}
+
+.crater-datelist-double-day{
+    font-size: 1.4em;
+    font-weight: bolder;
+}
+
+.crater-datelist-double-month{
+    font-size: .8em;
+}
+
+.crater-datelist-content-item-date-month{
+    text-transform: uppercase;
+}

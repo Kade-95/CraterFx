@@ -1,0 +1,218 @@
+.crater-image-caption-element{
+    overflow: hidden;
+}
+.crater-image-caption-container {
+    display: flex;
+    width: 700px;
+    height: 350px;
+    overflow: hidden;
+    position: relative;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.crater-image-container-image {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+}
+
+.crater-image-caption {
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    padding: .5em 0px;
+    text-align: left;
+    opacity: 0;
+    width: 100%;
+    height: 23%;
+    bottom: 0;
+    font-size: 1em;
+    /* animation: crater-image-caption-slide-out 1s; */
+    transition: all 300ms ease;
+    -webkit-transition: all 300ms ease;
+    -moz-transition: all 300ms ease;
+    -o-transition: all 300ms ease;
+    -ms-transition: all 300ms ease;
+}
+
+.crater-image-caption-text{
+    padding: 0 1em 0 1em;
+}
+
+
+@keyframes crater-image-caption-slide-in {
+    from {
+        left: 100%;
+    }
+
+    to {
+        left: 0;
+    }
+}
+
+@keyframes crater-image-caption-slide-out {
+    from {
+        left: 0;
+    }
+
+    to {
+        left: 100%;
+    }
+}
+
+@keyframes crater-image-cover-push-right {
+    from {
+        right: 100%;
+    }
+
+    to {
+        right: 0;
+    }
+}
+
+@keyframes crater-image-push-right {
+    from {
+        left: 0;
+    }
+
+    to {
+        left: 100%;
+    }
+}
+
+@keyframes crater-image-cover-push-left {
+    from {
+        right: 0;
+    }
+
+    to {
+        right: 100%;
+    }
+}
+
+@keyframes crater-image-push-left {
+    from {
+        left: 100%;
+    }
+
+    to {
+        left: 0;
+    }
+}
+
+@keyframes crater-image-caption-zoom-in {
+    from {
+        transform: scale(2.5);
+    }
+
+    to {
+        transform: scale(1)
+    }
+}
+
+@keyframes crater-image-caption-zoom-out {
+    from {
+        transform: scale(1)
+    }
+
+    to {
+        transform: scale(2.5);
+    }
+}
+
+@keyframes crater-image-cover-push-half {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: 50%;
+    }
+}
+
+@keyframes crater-image-push-half {
+    from {
+        bottom: 0;
+    }
+
+    to {
+        bottom: 50%;
+    }
+}
+
+@keyframes crater-image-cover-push-back {
+    from {
+        height: 50%;
+    }
+
+    to {
+        height: 0;
+    }
+}
+
+@keyframes crater-image-push-back {
+    from {
+        bottom: 50%;
+    }
+
+    to {
+        bottom: 0;
+    }
+}
+
+@keyframes crater-image-left-to-right {
+    from {
+        left: 100%
+    }
+
+    to {
+        left: 0;
+    }
+}
+
+@keyframes crater-image-left-to-right-reverse {
+    from {
+        left: 0;
+    }
+    
+    to {
+        left: 100%;
+    }
+}
+
+@keyframes crater-image-right-to-left {
+    from {
+        opacity: 0;
+        right: 100%;
+    }
+
+    to {
+        opacity: 1;
+        right: 0;
+    }
+}
+@keyframes crater-image-right-to-left-reverse {
+    from {
+        opacity: 1;
+        right: 0;
+    }
+
+    to {
+        opacity: 0;
+        right: 100%;
+    }
+}
+
+@keyframes crater-image-caption-cover-slide-top {
+    from {
+        opacity: 0;
+        bottom: 100%;
+    }
+
+    to {
+        opacity: 1;
+        bottom: 0;
+    }
+}

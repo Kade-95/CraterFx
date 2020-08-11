@@ -1,0 +1,70 @@
+.crater-tab {}
+
+.crater-tab .crater-tab-container {
+    display: grid;
+}
+
+.crater-tab .crater-menu {
+    background-color: #ffffff;
+    color: #000000;
+    position: relative;
+    display: flex;
+    min-height: 50px;
+    justify-content: center;
+}
+
+.crater-tab .crater-menu-item {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-gap: .5em;
+    align-items: center;
+    justify-items: center;
+    cursor: pointer;
+    padding: .3em;
+    margin: .1em;
+    color: black;
+    font-size: 1em;
+}
+
+.crater-tab .crater-menu-item-active {
+    background-color: #000fff;
+    color: #ffffff;
+    transition-duration: .4s;
+}
+
+.crater-tab .crater-menu-item:hover {
+    transition-duration: .4s;
+    background-color: #000fff;
+    color: #ffffff;
+}
+
+.crater-tab .crater-menu-item-icon {
+    font-size: inherit;
+    color: inherit;
+}
+
+.crater-tab .crater-menu-item-text {
+    font-size: inherit;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: inherit;
+}
+
+.crater-tab-content {
+    padding: 1em .3em;
+    position: relative;
+    display: flex;
+}
+
+.crater-tab-content .keyed-element {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.crater-tab-content .keyed-element.in-active {
+    opacity: 0;
+    z-index: 0;
+    display: none;
+}

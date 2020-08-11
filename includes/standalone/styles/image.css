@@ -1,0 +1,45 @@
+.crater-image {
+    margin: 0;
+}
+
+.crater-image-content {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+}
+
+#crater-image-src {
+    width: 300px;
+    height: auto;
+}
+
+#crater-image-optionals {
+    position: absolute;
+    display: grid;
+    grid-gap: 1em;
+}
+
+#crater-image-title {
+    font-size: 1.5em;
+    font-family: monospace;
+    color: white;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+#crater-image-subtitle {
+    font-size: 1.2em;
+    font-family: sans-serif;
+    color: gray;
+    font-style: italic;
+}
+
+#crater-image-link {
+    font-size: 1em;
+    color: black;
+    background-color: #fff;
+    padding: .5em 1em;
+    font-weight: bold;
+    text-decoration: none;
+}

@@ -1,0 +1,63 @@
+.crater-accordion {
+    overflow: auto;
+    border: 1px solid black;
+}
+
+.crater-accordion:hover{
+    box-shadow: 1px 1px 1px 1px #999999;
+    border: none;
+}
+
+.crater-accordion-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    padding: .5em;
+    color: #cccccc;
+    background-color: #333333;
+    font-weight: 1000;
+    font-size: 2em;
+    font-family: monospace;
+}
+
+.crater-accordion-title-icon {
+    width: 50px;
+    height: auto;
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.crater-accordion-content {
+    padding: .5em;
+}
+
+.crater-accordion-content-row {
+    margin: 1em;
+    padding: .5em;
+    text-align: left;
+    border-bottom: 1px solid #999999;
+    position: relative;
+}
+
+.crater-accordion-content-row-title{
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-gap: .5em;
+    padding: .5em;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+
+.crater-accordion-content-row-toggle{
+    width: 1em;
+    height: 1em;
+    border: 1px solid black;
+    padding: .1em;
+}
+
+.crater-accordion-content-row-content{
+    display: none;
+    padding: .5em;
+    word-break: break-all;
+}

@@ -77,9 +77,6 @@ function display() {
         },
         {
             element: 'nav', attributes: { id: 'big-nav' }, children: [
-                // { element: 'a', attributes: { href: 'aboutus.html', class: 'nav-link' }, text: 'About us' },
-                // { element: 'a', attributes: { href: 'work.html', class: 'nav-link' }, text: 'Work' },
-                // { element: 'a', attributes: { href: 'info.html', class: 'nav-link' }, text: 'Info' },
                 { element: 'a', attributes: { href: 'index.html?page=login', class: 'get-started btn btn-medium' }, text: 'Sign In' }
             ]
         },

@@ -1,0 +1,142 @@
+.crater-event{
+    margin: 0 auto;
+    width: 100%;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.3);
+}
+.crater-event-title {
+    background-color: #000;
+    color: white;
+    font-size: 2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    padding: .3em;
+    justify-items: center;
+}
+.crater-event-title-imgIcon {
+    width: 30px;
+    height: 30px;
+}
+
+.crater-event-title-captionTitle{
+    margin-left: 10px;
+}
+.crater-event-content-item {
+    display: grid;
+    grid-template-columns: min-content auto min-content;
+    font-size: large;
+    border: none;
+    border-top: 1px solid lightgray;
+    border-left: 3px solid turquoise;
+    background-color: transparent;
+    opacity: .8;
+}
+.single-crater-event{
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.crater-event-header{
+    display: none;
+    background-color: lightgray;
+    text-align: left;
+}
+
+.crater-event-header .date-group{
+    padding: .5em;
+    font-weight: bolder;
+    text-transform: capitalize;
+}
+
+
+.crater-event-content-task-location i {
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+.crater-event-content-item:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.crater-event-container-header{
+    display: none;
+    text-align: left;
+    padding-top: .2em;
+    padding-bottom: .2em;
+}
+#header-day{
+    font-size: xx-large;
+}
+#header-full-date{
+    font-size: 1em;
+}
+.crater-event-content-item::after{
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    transform: skew(8deg) rotate(3deg);
+}
+.crater-event-content-item-icon {
+    align-items: center;
+    position: relative;
+}
+.crater-event-content-item-icon::after {
+    content: '';
+    height: 50%;
+    width: 3px;
+    position: absolute;
+    right: 0;
+    top: .7em;
+    background-color: #b96c6c;
+}
+.crater-event-content-item-icon-image {
+    width:40px;
+    height:40px;
+    padding:.3em;
+}
+.crater-event-content-item-date {
+    text-align: center;
+    padding: .5em 1.2em;
+    color: grey;
+}
+.crater-event-content-item-date-day {
+    font-size: 1.2em;
+}
+.crater-event-content-item-date-month {
+    font-size: .6em;
+}
+.crater-event-content-task {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    text-align: left;
+    padding: .5em 1em;
+    padding-bottom: .5em;
+    font-size: .8em;
+}
+
+.crater-event-content-task-caption {
+    font-size: 1.1em;
+    font-family: cursive;
+}
+
+.crater-event-content-task-location-place {
+    font-style: oblique;
+    font-size: 1em;
+    font-family: Arial;
+    color: grey;
+}
+
+.crater-event-content-task-div{
+    display: flex;
+} 
+.crater-event-content-task-caption-img{
+    width: 20px;
+    height: 20px;
+    display: none;
+}
+
+.crater-event-content-task-location-duration {
+    font-style: oblique;
+    font-size: 1em;
+    font-family: Arial;
+    color: grey;
+}

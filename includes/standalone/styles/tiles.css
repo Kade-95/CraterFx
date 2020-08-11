@@ -1,0 +1,153 @@
+.crater-tiles {
+    align-items: center;
+}
+
+.crater-tiles-content {
+    width: var(--crater-match-parent);
+    text-align: center;
+    display: grid;
+    justify-content: space-around;
+    grid-gap: 10px;
+}
+
+.crater-tiles-content-column {
+    display: grid;
+    place-items: center;
+    background-color: #333333;
+    position: relative;
+    min-height: 100px;
+    color: white;
+    box-shadow: var(--secondary-shadow);
+    vertical-align: top;
+    cursor: pointer;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column:hover {
+    box-shadow: var(--primary-shadow);
+}
+
+.crater-tiles-content-column .crater-tiles-content-column-image {
+    font-size: 100px;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.crater-tiles-content-column-details {
+    display: grid;
+    padding: 0em 1%;
+    color: inherit;
+    position: absolute;
+    min-height: 30px;
+    text-align: left;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column-details-name {
+    display: block;
+    justify-content: center;
+    font-weight: bolder;
+    font-family: sans-serif;
+    font-size: 1.2em;
+    padding: .2em 0em;
+}
+
+.crater-tiles-content-column-details-about {
+    font-size: 1em;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: .05em;
+    text-transform: capitalize;
+    font-weight: 300px;
+    padding: .8em;
+}
+
+.crater-tiles-content-column-details-slideup-short {
+    background-color: var(--light-accient-color);
+    height: 30px;
+    bottom: 0;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column-details-slideup-short .crater-tiles-content-column-details-about {
+    display: none;
+}
+
+.crater-tiles-content-column-details-slideup-full {
+    background-color: var(--light-accient-color);
+    height: inherit;
+    top: 0;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column-details-slideup-full .crater-tiles-content-column-details-about {
+    display: flex;
+}
+
+.crater-tiles-content-column-details-slideleft-short {
+    background-color: var(--light-accient-color);
+    height: inherit;
+    top: 0;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column-details-slideleft-short .crater-tiles-content-column-details-about {
+    display: none;
+}
+
+.crater-tiles-content-column-details-slideleft-short .crater-tiles-content-column-details-name {
+    border-bottom: none;
+    width: 0%;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column-details-slideleft-full {
+    background-color: transparent;
+    height: inherit;
+    top: 0;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column-details-slideleft-full .crater-tiles-content-column-details-about {
+    display: flex;
+}
+
+.crater-tiles-content-column-details-slideleft-full .crater-tiles-content-column-details-name {
+    border-bottom: 1px solid white;
+    width: 100%;
+    transition: all .5s ease;
+}
+
+.crater-tiles-content-column-details-twist-short {
+    height: 0px;
+    top: 0;
+    transition: all .5s ease-in;
+    display: none;
+    width: 0%;
+}
+
+.crater-tiles-content-column-details-twist-full {
+    height: inherit;
+    top: 0;
+    width: 98%;
+    transition: all .5s ease-in;
+    display: unset;
+}
+
+.crater-tiles-content-column-untwist{
+    transition: all .5s ease-in;
+}
+
+.crater-tiles-content-column-twist{
+    transition: all .5s ease-in;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 20px solid;
+    border-right: 20px solid;
+    border-radius: 20px;
+}

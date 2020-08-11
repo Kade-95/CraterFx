@@ -1,0 +1,43 @@
+.crater-panel {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.crater-panel:hover {
+    box-shadow: 1px 1px 2px #aaaaaa, -1px -1px 2px #aaaaaa;
+}
+
+.crater-panel-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    position: relative;
+}
+
+.crater-panel-title {
+    border: 1px solid var(--accient-color);
+    background-color: var(--accient-color);
+    color: var(--secondary-color);
+    font-size: 1.2em;
+    display: flex;
+    place-items: center;
+    padding: .5em;
+    width: -webkit-fill-available;
+}
+
+.crater-panel-link {
+    position: absolute;
+    background-color: white;
+    color: black;
+    text-decoration: none;
+    padding: .2em .5em;
+    margin: .5em;
+    top: 0;
+    place-self: flex-end;
+}
+
+.crater-panel-webparts {
+    padding: .2em;
+}

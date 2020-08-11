@@ -1,0 +1,339 @@
+.crater-tm-header {
+    padding: 15px;
+    background-color: rgba(84, 185, 205, 1.0);
+    border-radius: 10px;
+}
+
+.crater-tm-header::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.crater-tm-header-text-box {
+    float: left;
+    color: white;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.crater-tm-header-text {
+    margin-left: 10px;
+}
+
+.crater-tm-admin-create{
+    display: none;
+    background-color: #84c4ee;
+    color: #f2f2f2;
+    margin: 10px;
+    padding: 1em;
+    font-weight: bold;
+}
+
+.crater-tm-header-right-nav {
+    float: right;
+    display: inline-flex;
+}
+
+.crater-tm-header-search-bar {
+    float: left;
+}
+
+#search-bar-input {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    padding: 10px;
+    width: 0px;
+    opacity: 0;
+    -webkit-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+.task-button {
+    color: #555;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.5s;
+    border: none;
+    padding: 10px;
+}
+
+.search-bar-button {
+    background-color: #d9d9d9;
+}
+
+.search-bar-button:hover {
+    background-color: #bbb;
+}
+
+.add-new {
+    float: left;
+    margin-left: 3px;
+}
+
+.add-new-button {
+    background-color: #99c57f;
+}
+
+.add-new-button:hover {
+    background-color: #92dd67;
+}
+
+.view-status-button {
+    background-color: #e2af63;
+}
+
+.view-status-button:hover {
+    background-color: #f09642;
+}
+
+
+.task-list-container {
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border-radius: 10px;
+    box-shadow: 0px 0px 8px #f2e3df;
+    border: 1px solid #f2e3df;
+    margin: 5px auto;
+}
+
+.task-manager-not-found{
+    padding: 10px;
+    background-color: #ff5858;
+    color: white;
+    border-radius: 10px;
+    display: none;
+    transition: all 0.7s ease;
+}
+
+.task-list-item {
+    display: inline-block;
+    width: 95%;
+    line-height: 30px;
+    padding: 12px;
+    background-color: white;
+    color: #8b8f97;
+    cursor: pointer;
+    border-bottom: 1px solid #e6ebed;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.task-list-cb {
+    display: none;
+}
+
+.task-list-item:hover{
+    background-color: #ebebeb;
+    transition: 0.5s ease-in-out;
+}
+
+.task-check-box{
+    float: left;
+}
+
+.task-check-mark {
+    position: relative;
+    float: left;
+    vertical-align: top;
+    margin-right: 8px;
+    width: 15px;
+    height: 15px;
+    border: 2px solid #f2e3df;
+    border-radius: 12px;
+}
+
+.task-check-mark::before {
+    content: '';
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -5px 0 0 -6px;
+    height: 4px;
+    width: 8px;
+    border: solid #cec5c3;
+    border-width: 0 0 2px 2px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.task-list-cb:checked~.task-check-mark {
+    border-color: rgb(198, 212, 204);
+    box-shadow: 0px 0px 3px #cec5c3;
+}
+
+.task-list-cb:checked~.task-check-mark::before {
+    display: block;
+}
+
+.task-list-cb:checked~.task-name {
+    text-decoration: line-through;
+}
+
+.task-name{
+    float: left;
+}
+
+.task-manager-info {
+    float: right;
+}
+
+.task-manager-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-manager-info span {
+    font-weight: 300;
+}
+
+.task-manager-info-button {
+    width: 100px;
+    height: 30px;
+    line-height: 20px;
+    border-radius: 4px;
+    margin: 10px 10px;
+    text-align: center;
+    padding: .5em;
+    cursor: pointer;
+    color: White;
+    font-weight: 700;
+}
+
+.task-started {
+    background-color: rgb(231, 250, 127);
+}
+
+.task-completed {
+    background-color: #85C157;
+}
+
+.task-in-progress {
+    background-color: rgb(230, 227, 94);
+}
+
+.task-not-started {
+    background-color: rgb(240, 69, 69);
+}
+
+.task-suspended {
+    background-color: #AAA;
+}
+
+.task-waiting-on-someone {
+    background-color: rgb(197, 114, 58);
+}
+
+.task-deferred {
+    background-color: #50b1f1;
+}
+
+.task-manager-status-view {
+    display: none;
+    padding: 12px;
+}
+
+.tms-view-item {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.tms-view {
+    padding: 10px;
+    color: white;
+    text-align: center;
+}
+
+.tms-view-icon {
+    background-color: dodgerblue;
+    width: 50px;
+}
+
+.tms-view-head {
+    background-color: rgb(141, 143, 145);
+    width: 300px;
+}
+
+.tms-view-number {
+    background-color: rgb(250, 229, 161);
+    color: dodgerblue;
+    width: 50px;
+}
+
+.tms-tasks{
+    margin: 8px;
+    float: left;
+}
+
+#task-list-form-back{
+    display: none;
+}
+
+.task-list-form {
+    display: none;
+    width: 70%;
+    margin: 10px auto;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0px 0px 12px #ccc;
+}
+
+.task-list-form label {
+    margin: 5px 12px 5px 0;
+}
+
+.form-field {
+    padding: 15px;
+}
+
+.create-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.task-list-form .invalid-field {
+    background-color: #ffdddd;
+}
+
+.task-form-tab {
+    display: none;
+}
+
+.task-step-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.task-step {
+    width: 15px;
+    height: 15px;
+    background-color: #bbbbbb;
+    display: inline-block;
+    opacity: 0.5;
+    border-radius: 50%;
+}
+
+.task-step.active-page {
+    opacity: 1;
+}
+
+.submit-field {
+    display: flex;
+    justify-content: center;
+}
+
+.finish-page {
+    background-color: #4CAF50;
+}

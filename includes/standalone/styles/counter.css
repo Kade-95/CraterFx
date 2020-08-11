@@ -1,0 +1,81 @@
+.crater-counter {
+    align-items: center;
+}
+
+.crater-counter-content {
+    width: 100%;
+    text-align: center;
+    display: grid;
+    justify-content: space-around;
+    grid-gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+ 
+.crater-counter-content-column {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    position: relative;
+    min-height: 100px;
+    color: white;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.crater-counter-content-column:hover {
+    box-shadow: var(--primary-shadow);
+}
+
+.crater-counter-content-column-image {
+    z-index: 1;
+    font-size: 2em;
+    color: lavenderblush;
+}
+
+.crater-counter-content-column-details {
+    line-height: normal;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: .2em;
+    font-family: sans-serif;
+    text-align: left;
+    color: inherit;
+    width: 15ch;
+    max-width: 100%;
+}
+
+.crater-counter-content-column-details-value {
+    text-align: left;
+    display: grid;
+    grid-template-columns: repeat(2, min-content);
+    grid-gap: .2em;
+    font-weight: 400;
+}
+ 
+.crater-counter-content-column-details-value-count {
+    text-align: left;
+    font-weight: 100;
+    font-size: 3.5vw;
+}
+
+.crater-counter-content-column-details-value-unit {
+    text-align-last: left;
+    font-size: 1.5vw;
+    /* text-transform: uppercase; */
+}
+
+.crater-counter-content-column-details-name {
+    text-align: left;
+    font-size: 1em;
+    letter-spacing: .05em;
+    text-transform: capitalize !important;
+    font-weight: bold;
+    text-decoration: none;
+    color: #fff;
+    /* width: auto; */
+}
+
+.crater-counter-content-column-details-name:hover {
+    text-decoration: underline;
+}
