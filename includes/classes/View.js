@@ -1,16 +1,14 @@
-let JSElements = require('./../../Perceptors/back/classes/JSElements');
-class View extends JSElements {
+class View  {
     // set the document on entry
     constructor(metadata, appType) {
-        super();
         this.docType = "<!DOCTYPE html>";
         this.pages = [];
-        this.object.copy(metadata, this);
+        kerds.object.copy(metadata, this);
         this.appType = appType;
     }
 
     createView(params) {
-        this.object.copy(params, this);
+        kerds.object.copy(params, this);
 
         this.response.setHeader('Content-Type', 'text/html');
         this.setupPage().then((html) => {
@@ -20,7 +18,7 @@ class View extends JSElements {
 
     setupPage() {
         return new Promise(async (resolve, reject) => {
-            let html = this.createElement({
+            let html = kerds.createElement({
                 element: 'html', children: [
                     { element: 'head' },
                     { element: 'body' },
@@ -72,7 +70,7 @@ class View extends JSElements {
                 });
             }
 
-            let urlVars = this.getUrlVars(this.request.url);
+            let urlVars = kerds.getUrlVars(this.request.url);
             if (this.appType == 'webapp') {
                 let dom = this.docType + html.outerHTML;
                 this.response.write(dom);

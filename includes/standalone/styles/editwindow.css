@@ -3,7 +3,7 @@
     z-index: 1000;
     top: 0;
     left: 0;
-    background-color: var(--dark-accient-color);
+    background-color: var(--primary-color);
     display: grid;
     grid-template-rows: max-content 1fr;
     height: 100vh;
@@ -11,8 +11,8 @@
 }
 
 .crater-edit-window .crater-menu {
-    background-color: var(--secondary-color);
-    color: var(--accient-color);
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
     height: max-content;
     width: 100%;
     display: grid;
@@ -32,11 +32,11 @@
 
 .crater-edit-window .crater-menu .crater-menu-item:hover {
     transition-duration: .4s;
-    background-color: var(--light-primary-color);
+    background-color: var(--light-accient-color);
 }
 
 .crater-editor {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     overflow: auto;
     text-align: center;
     padding: 1em;

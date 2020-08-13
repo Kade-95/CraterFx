@@ -146,3 +146,44 @@
     background: black;
     transition-duration: .5s;
 }
+
+.crater-select-window{
+    width: 100%;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.crater-menu{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    padding: .5em;
+    list-style: none;
+}
+
+.crater-menu-item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: .5em 0em;
+}
+
+.crater-menu-item:hover, .crater-menu-item.active{
+    color: var(--secondary-color);
+    background-color: var(--light-accient-color);
+}
+
+.crater-select-window-container{
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    grid-template-columns: 1fr;
+    gap: .5em;
+    height: 100%;
+    overflow: hidden;
+    justify-content: center;
+}

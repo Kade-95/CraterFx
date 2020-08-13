@@ -1,8 +1,9 @@
-import { Perceptor } from '../Perceptors/front/index.js';
+window.system = {};
+
+import { Kerdx } from 'https://kade-95.github.io/kerdx/index.js';
 import { CraterUi } from './pages/CraterUi.js';
 
-window.perceptor = new Perceptor();
-window.system = {};
+window.kerdx = new Kerdx();
 const craterUi = new CraterUi();
 let viewSet = false;
 window.log = console.log;
@@ -36,7 +37,7 @@ function route() {
     });
 
     let { url, pathname } = location;
-    if (!perceptor.isset(system.user) || system.user == 'undefined') {
+    if (!kerdx.isset(system.user) || system.user == 'undefined') {
         if (!(pathname == '/' || pathname == '/index.html')) {
             system.redirect('index.html');
         }
@@ -94,11 +95,12 @@ function display() {
             ]
         }
     ]);
+    let url = kerdx.urlSplitter(location.href);
 
     header.find('.toggle').addEventListener('click', event => {
         event.target.classList.toggle('toggle-open');
         event.target.classList.toggle('toggle-close');
-        if (!perceptor.isset(header.find('#header-side-bar').css().display)) {
+        if (!kerdx.isset(header.find('#header-side-bar').css().display)) {
             header.find('#header-side-bar').css({ display: 'grid' });
         }
         else {
@@ -121,7 +123,7 @@ function display() {
                         element: 'div', attributes: { class: 'descriptive-link' }, children: [
                             { element: 'h5', attributes: { class: 'descriptive-link-title' }, html: 'Crater API' },
                             { element: 'p', attributes: { class: 'descriptive-link-text' }, text: '' },
-                            { element: 'a', attributes: { class: 'btn btn-big' }, text: '' }
+                            { element: 'a', attributes: { class: 'btn btn-big', href: 'index.html?page=displayCrater' }, text: 'Creater' }
                         ]
                     },
                 ]
@@ -132,15 +134,18 @@ function display() {
         ]
     });
 
-    if (perceptor.urlSplitter(location).vars.page == 'login') {
-        login(document.body.find('#main-window-container'));
+    if (url.vars.page == 'login') {
+        login(main.find('#main-window-container'));
+    }
+    else if (url.vars.page == 'displayCrater') {
+        system.displayCrater();
     }
 }
 
 function login(container) {
-    let loading = perceptor.createElement({ element: 'span', attributes: { class: 'loading loading-medium' } });
+    let loading = kerdx.createElement({ element: 'span', attributes: { class: 'loading loading-medium' } });
 
-    let loginForm = perceptor.createForm({
+    let loginForm = kerdx.createForm({
         title: 'Login Form', attributes: { id: 'login-form', class: 'form' },
         contents: {
             email: { element: 'input', attributes: { id: 'email', name: 'email' } },
@@ -160,7 +165,7 @@ function login(container) {
         loginForm.getState({ name: 'submit' }).replaceWith(loading);
         loginForm.setState({ name: 'error', attributes: { style: { display: 'none' } }, text: '' });
 
-        if (!perceptor.validateForm(loginForm)) {
+        if (!kerdx.validateForm(loginForm)) {
             loading.replaceWith(loginForm.getState({ name: 'submit' }));
             loginForm.setState({ name: 'error', attributes: { style: { display: 'unset' } }, text: 'Faulty form' });
 
@@ -168,7 +173,7 @@ function login(container) {
         }
 
         loading.replaceWith(loginForm.getState({ name: 'submit' }));
-        let data = perceptor.jsonForm(loginForm);
+        let data = kerdx.jsonForm(loginForm);
         data.action = 'login';
 
         system.connect({ data }).then(result => {
@@ -209,8 +214,20 @@ function toggleNotifications() {
 system.smallScreen = window.matchMedia("(min-width: 700px)");
 system.realSmallScreen = window.matchMedia("(min-width: 500px)");
 
+system.displayCrater = () => {
+    let craterWindow = kerdx.createElement({
+        element: 'iframe', attributes: {id: 'crater-window', style: {height: '100%', width: '100%'}}
+    });
+    craterWindow.src = 'includes/standalone/index.html';
+
+    let popUpCrater = kerdx.popUp(craterWindow, {attributes: {style: {width: '100%', height: '100%'}}});
+
+    craterWindow.contentDocument.head.innerHTML = ''
+
+}
+
 system.redirect = url => {
-    window.history.pushState('page', 'title', perceptor.api.prepareUrl(url));
+    window.history.pushState('page', 'title', kerdx.api.prepareUrl(url));
     route();
 }
 
@@ -234,13 +251,13 @@ system.notify = (params) => {
 
     openNotifications.click();
 
-    let note = perceptor.createElement({
+    let note = kerdx.createElement({
         element: 'span', attributes: { class: 'single-notification' }, children: [
             { element: 'p', attributes: { class: 'single-notification-text' }, text: params.note }
         ]
     });
 
-    if (perceptor.isset(params.link)) {
+    if (kerdx.isset(params.link)) {
         note.makeElement({ element: 'a', attributes: { href: params.link, class: 'fas fa-eye', title: 'see notification' } }
         );
     }
@@ -270,14 +287,14 @@ system.notify = (params) => {
 }
 
 system.connect = (params) => {
-    let progressBar = perceptor.createElement({ element: 'input', attributes: { class: 'ajax-progress', type: 'progress' } });
+    let progressBar = kerdx.createElement({ element: 'input', attributes: { class: 'ajax-progress', type: 'progress' } });
     params.onprogress = (stage) => {
         progressBar.css({ width: stage + '%' })
     }
 
     return new Promise((resolve, reject) => {
         document.body.append(progressBar);
-        perceptor.api.ajax(params)
+        kerdx.api.ajax(params)
             .then(result => {
                 result = JSON.parse(result);
 
@@ -318,15 +335,15 @@ system.display404 = (container) => {
 }
 
 system.loadView = (view) => {
-    view.lightPrimaryColor = perceptor.colorHandler.addOpacity(view.primaryColor, 0.5);
-    view.lighterPrimaryColor = perceptor.colorHandler.addOpacity(view.primaryColor, 0.2);
-    view.lightSecondaryColor = perceptor.colorHandler.addOpacity(view.secondaryColor, 0.5);
-    view.lighterSecondaryColor = perceptor.colorHandler.addOpacity(view.secondaryColor, 0.2);
-    view.lightAccientColor = perceptor.colorHandler.addOpacity(view.accientColor, 0.5);
-    view.lighterAccientColor = perceptor.colorHandler.addOpacity(view.accientColor, 0.2);
+    view.lightPrimaryColor = kerdx.colorHandler.addOpacity(view.primaryColor, 0.5);
+    view.lighterPrimaryColor = kerdx.colorHandler.addOpacity(view.primaryColor, 0.2);
+    view.lightSecondaryColor = kerdx.colorHandler.addOpacity(view.secondaryColor, 0.5);
+    view.lighterSecondaryColor = kerdx.colorHandler.addOpacity(view.secondaryColor, 0.2);
+    view.lightAccientColor = kerdx.colorHandler.addOpacity(view.accientColor, 0.5);
+    view.lighterAccientColor = kerdx.colorHandler.addOpacity(view.accientColor, 0.2);
 
     let rootCss = document.head.find('#root-css');
-    if (perceptor.isnull(rootCss)) {
+    if (kerdx.isnull(rootCss)) {
         rootCss = document.head.makeElement({ element: 'style', attributes: { id: 'root-css' } });
     }
 
@@ -366,7 +383,7 @@ document.addEventListener('DOMContentLoaded', event => {
     route();
 
     if (true) {
-        perceptor.api.makeWebapp(event => {
+        kerdx.api.makeWebapp(event => {
             route();
         });
     }

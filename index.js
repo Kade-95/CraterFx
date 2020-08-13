@@ -20,7 +20,7 @@ let metadata = {
     }
 };
 
-global.kerds = new Kerds({ server: { address: "mongodb://localhost:27017/", name: 'craterapi' } });
+global.kerds = new Kerds({ server: { address: "mongodb://localhost:27017/", name: 'craterapi' }, index: 'index.html' });
 global.db = new Database({ address: "mongodb://localhost:27017/", name: 'craterapi' });
 global.bcrypt = require('bcrypt');
 global.ObjectId = require('mongodb').ObjectId;

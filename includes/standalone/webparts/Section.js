@@ -1,51 +1,36 @@
-import { ElementModifier } from './../ElementModifier';
-import { CraterWebParts } from './../CraterWebParts';
-
-class Section extends ElementModifier {
-    public params: any;
-    private element: any;
-    private paneContent: any;
-    private key: any;
-    private craterWebparts: any;
-
-    constructor(params) {
-        super({ sharePoint: params.sharePoint });
-        this.sharePoint = params.sharePoint;
-        this.params = params;
-        this.craterWebparts = new CraterWebParts(params);
-    }
-
-    public render(params) {
+function section() {
+    let self = {};
+    self.render = function (params) {
         params.height = params.height || '100px';
-        let section = this.createKeyedElement({
+        let section = craterApp.craterWebparts.createKeyedElement({
             element: 'div', attributes: { class: 'crater-component crater-container crater-section', 'data-type': 'section', style: { minHeight: params.height } }, options: ['Append', 'Edit', 'Delete', 'Clone'], type: 'crater-section', alignOptions: 'right', children: [
                 { element: 'div', attributes: { class: 'crater-section-content', id: 'crater-section-content' } }
             ]
         });
-        
-        this.key = section.dataset['key'];
+
+        self.key = section.dataset['key'];
         return section;
     }
 
-    public rendered(params) {
-        this.element = params.element;
-        this.key = params.element.dataset.key;
+    self.rendered = function (params) {
+        self.element = params.element;
+        self.key = params.element.dataset.key;
         let settings = JSON.parse(params.element.dataset.settings);
 
         //get the the section's view[tabbed, straight]
         let view = settings.linkWindow;
 
         //fetch the section menu
-        let menu = this.element.find('.crater-section-menu');
+        let menu = self.element.find('.crater-section-menu');
 
-        if (!this.func.isnull(menu) && this.func.isset(this.element.dataset.view) && this.element.dataset.view == 'Tabbed') {//if menu exists and section is tabbed
+        if (!kerdx.isnull(menu) && kerdx.isset(self.element.dataset.view) && self.element.dataset.view == 'Tabbed') {//if menu exists and section is tabbed
             menu.findAll('li').forEach(li => {
                 let found = false;
                 let owner = li.dataset.owner;
-                for (let keyedElement of this.element.find('.crater-section-content').findAll('.keyed-element')) {
+                for (let keyedElement of self.element.find('.crater-section-content').findAll('.keyed-element')) {
                     if (owner == keyedElement.dataset.key) {
                         found = true;
-                        li.innerText = this.func.isset(keyedElement.dataset.title) ? keyedElement.dataset.title : keyedElement.dataset.type;
+                        li.innerText = kerdx.isset(keyedElement.dataset.title) ? keyedElement.dataset.title : keyedElement.dataset.type;
                         break;
                     }
                 }
@@ -57,7 +42,7 @@ class Section extends ElementModifier {
             menu.addEventListener('click', event => {
                 if (event.target.nodeName == 'LI') {
                     let li = event.target;
-                    this.element.findAll('.keyed-element').forEach(keyedElement => {
+                    self.element.findAll('.keyed-element').forEach(keyedElement => {
                         keyedElement.classList.add('in-active');
                         if (li.dataset.owner == keyedElement.dataset.key) {
                             keyedElement.classList.remove('in-active');
@@ -65,31 +50,31 @@ class Section extends ElementModifier {
                     });
                 }
             });
-            if (this.element.dataset.view == 'Tabbed') {
+            if (self.element.dataset.view == 'Tabbed') {
                 //click the last menu
                 let menuButtons = menu.findAll('li');
                 menuButtons[menuButtons.length - 1].click();
             }
         }
-        this.dragSize();
-        this.showOptions(this.element);
+        self.dragSize();
+        craterApp.craterWebparts.showOptions(self.element);
     }
 
-    private dragSize() {
-        this.element.cssRemove(['cursor']);
-        if (!this.sharePoint.inEditMode) return;
+    self.dragSize = function () {
+        self.element.cssRemove(['cursor']);
+        if (!craterApp.inEditMode) return;
         let position,
             direction,
-            keyedContainer = this.element.getParents('.keyed-element'),
+            keyedContainer = self.element.getParents('.keyed-element'),
             keyedContainerPosition = keyedContainer.position(),
-            parent = this.element.parentNode,
+            parent = self.element.parentNode,
             sections = parent.childNodes,
-            nextSibling = this.element.nextSibling,
-            previousSibling = this.element.previousSibling,
+            nextSibling = self.element.nextSibling,
+            previousSibling = self.element.previousSibling,
             sibling;
 
         let getDirection = (event) => {
-            position = this.element.position();
+            position = self.element.position();
             let along, from, cursor;
             if (event.x <= position.x + 8 && event.y <= position.y + 8) {
                 cursor = 'se-resize';
@@ -144,7 +129,7 @@ class Section extends ElementModifier {
         };
 
         let resizeWidth = (event) => {
-            position = this.element.position();
+            position = self.element.position();
             //make sure that section does not exceed the bounds of the parent/crater
             if (direction.from.includes('left') && event.x > position.right || (direction.from.includes('right') && event.x < position.left)) {
                 return;
@@ -158,7 +143,7 @@ class Section extends ElementModifier {
                 sibling = nextSibling;
             }
 
-            if (this.func.isnull(sibling) || !sibling.classList.contains('crater-section')) {
+            if (kerdx.isnull(sibling) || !sibling.classList.contains('crater-section')) {
                 return;
             }
 
@@ -187,20 +172,20 @@ class Section extends ElementModifier {
                 // if section or siblings width is less than or equals 50 stop dragging
                 if ((myWidth <= 50 || mySiblingWidth <= 50)) return;
                 const keyedContainerSettings = JSON.parse(keyedContainer.dataset.settings);
-                keyedContainerSettings.widths[sections.indexOf(this.element)] = myWidth + 'px';
+                keyedContainerSettings.widths[sections.indexOf(self.element)] = myWidth + 'px';
 
-                this.sharePoint.attributes.pane.content[keyedContainer.dataset.key].settings.widths[sections.indexOf(this.element)] = myWidth + 'px';
+                craterApp.attributes.pane.content[keyedContainer.dataset.key].settings.widths[sections.indexOf(self.element)] = myWidth + 'px';
 
-                this.sharePoint.attributes.pane.content[keyedContainer.dataset.key].settings.widths[sections.indexOf(sibling)] = mySiblingWidth + 'px';
+                craterApp.attributes.pane.content[keyedContainer.dataset.key].settings.widths[sections.indexOf(sibling)] = mySiblingWidth + 'px';
 
-                this.sharePoint.attributes.pane.content[keyedContainer.dataset.key].settings.columnsSizes = this.func.stringReplace(this.sharePoint.attributes.pane.content[keyedContainer.dataset.key].settings.widths.toString(), ',', ' ');
+                craterApp.attributes.pane.content[keyedContainer.dataset.key].settings.columnsSizes = kerdx.stringReplace(craterApp.attributes.pane.content[keyedContainer.dataset.key].settings.widths.toString(), ',', ' ');
 
-                parent.css({ gridTemplateColumns: this.sharePoint.attributes.pane.content[keyedContainer.dataset.key].settings.columnsSizes });
+                parent.css({ gridTemplateColumns: craterApp.attributes.pane.content[keyedContainer.dataset.key].settings.columnsSizes });
             }
         };
 
         let resizeHeight = (event) => {
-            position = this.element.position();
+            position = self.element.position();
             // make sure that section does not exceed the bounds of the parent/crater
             if (direction.from.includes('top') && event.y > keyedContainerPosition.bottom || (direction.from.includes('bottom') && event.y < keyedContainerPosition.top)) {
                 return;
@@ -225,13 +210,13 @@ class Section extends ElementModifier {
                 }
 
                 if (myHeight >= 100) {
-                    this.element.css({ minHeight: `${myHeight}px` });
+                    self.element.css({ minHeight: `${myHeight}px` });
                 }
             }
         };
 
         let drag = event => {
-            if (this.func.isset(direction.along)) {
+            if (kerdx.isset(direction.along)) {
                 if (direction.along == 'y') {
                     keyedContainer.addEventListener('mousemove', resizeHeight, false);
                 }
@@ -245,18 +230,18 @@ class Section extends ElementModifier {
             }
         };
 
-        this.element.addEventListener('mousemove', getDirection, false);
+        self.element.addEventListener('mousemove', getDirection, false);
 
-        this.element.addEventListener('mousedown', event => {
-            this.element.removeEventListener('mousemove', getDirection, false);
+        self.element.addEventListener('mousedown', event => {
+            self.element.removeEventListener('mousemove', getDirection, false);
             direction = getDirection(event);
-            this.element.addEventListener('mousemove', drag, false);
+            self.element.addEventListener('mousemove', drag, false);
             keyedContainer.css({ cursor: direction.cursor });
         });
 
-        this.element.addEventListener('mouseup', event => {
-            this.element.addEventListener('mousemove', getDirection, false);
-            this.element.removeEventListener('mousemove', drag, false);
+        self.element.addEventListener('mouseup', event => {
+            self.element.addEventListener('mousemove', getDirection, false);
+            self.element.removeEventListener('mousemove', drag, false);
             keyedContainer.cssRemove(['cursor']);
         });
 
@@ -273,12 +258,12 @@ class Section extends ElementModifier {
         });
     }
 
-    private generatePaneContent(params) {
-        let sectionContentsPane = this.createElement({
+    self.generatePaneContent = function (params) {
+        let sectionContentsPane = kerdx.createElement({
             element: 'div', attributes: { class: 'card section-contents-pane' }, children: [
-                this.createElement({
+                kerdx.createElement({
                     element: 'div', attributes: { class: 'card-title' }, children: [
-                        this.createElement({
+                        kerdx.createElement({
                             element: 'h2', attributes: { class: 'title' }, text: 'Section Contents'
                         })
                     ]
@@ -294,7 +279,7 @@ class Section extends ElementModifier {
                     style: { border: '1px solid #bbbbbb', margin: '.5em 0em' }, class: 'row crater-section-content-row-pane'
                 },
                 children: [
-                    this.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-section-content-row' }),
+                    craterApp.craterWebparts.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-section-content-row' }),
                     { element: 'span', attributes: { class: 'crater-section-webpart-name' }, text: params.source[i].dataset.type }
                 ]
             });
@@ -303,11 +288,11 @@ class Section extends ElementModifier {
         return sectionContentsPane;
     }
 
-    private setUpPaneContent(params) {
-        this.element = params.element;
-        this.key = params.element.dataset.key;
+    self.setUpPaneContent = function (params) {
+        self.element = params.element;
+        self.key = params.element.dataset.key;
         let settings = JSON.parse(params.element.dataset.settings);
-        this.paneContent = this.createElement({
+        self.paneContent = kerdx.createElement({
             element: 'div',
             attributes: { class: 'crater-property-content' }
         }).monitor();
@@ -315,30 +300,30 @@ class Section extends ElementModifier {
         //fetch the sections view
         let view = settings.linkWindow;
 
-        if (this.sharePoint.attributes.pane.content[this.key].draft.pane.content != '') {
-            this.paneContent.innerHTML = this.sharePoint.attributes.pane.content[this.key].draft.pane.content;
+        if (craterApp.attributes.pane.content[self.key].draft.pane.content != '') {
+            self.paneContent.innerHTML = craterApp.attributes.pane.content[self.key].draft.pane.content;
         }
-        else if (this.sharePoint.attributes.pane.content[this.key].content != '') {
-            this.paneContent.innerHTML = this.sharePoint.attributes.pane.content[this.key].content;
+        else if (craterApp.attributes.pane.content[self.key].content != '') {
+            self.paneContent.innerHTML = craterApp.attributes.pane.content[self.key].content;
         }
         else {
-            this.paneContent.makeElement({
+            self.paneContent.makeElement({
                 element: 'div', children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'button', attributes: { class: 'btn new-component', style: { display: 'inline-block', borderRadius: '5px' } }, text: 'Add New'
                     })
                 ]
             });
 
-            let elementContents = this.element.find('.crater-section-content').findAll('.keyed-element');
+            let elementContents = self.element.find('.crater-section-content').findAll('.keyed-element');
 
-            this.paneContent.append(this.generatePaneContent({ source: elementContents }));
+            self.paneContent.append(self.generatePaneContent({ source: elementContents }));
 
-            let settingsPane = this.paneContent.makeElement({
+            let settingsPane = self.paneContent.makeElement({
                 element: 'div', attributes: { class: 'card', style: { margin: '1em', display: 'block' } }, sync: true, children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'card-title' }, children: [
-                            this.createElement({
+                            kerdx.createElement({
                                 element: 'h2', attributes: { class: 'title' }, text: 'Settings'
                             })
                         ]
@@ -347,33 +332,33 @@ class Section extends ElementModifier {
             });
         }
 
-        let contents = this.element.find('.crater-section-content').findAll('.keyed-element');
-        this.paneContent.find('.section-contents-pane').innerHTML = this.generatePaneContent({ source: contents }).innerHTML;
+        let contents = self.element.find('.crater-section-content').findAll('.keyed-element');
+        self.paneContent.find('.section-contents-pane').innerHTML = self.generatePaneContent({ source: contents }).innerHTML;
 
-        return this.paneContent;
+        return self.paneContent;
     }
 
-    private listenPaneContent(params) {
-        this.element = params.element;
-        this.key = params.element.dataset.key;
+    self.listenPaneContent = function (params) {
+        self.element = params.element;
+        self.key = params.element.dataset.key;
         let settings = JSON.parse(params.element.dataset.settings);
 
-        this.paneContent = this.sharePoint.app.find('.crater-property-content').monitor();
+        self.paneContent = craterApp.app.find('.crater-property-content').monitor();
 
-        let sectionContents = this.sharePoint.attributes.pane.content[this.key].draft.dom.find('.crater-section-content');
+        let sectionContents = craterApp.attributes.pane.content[self.key].draft.dom.find('.crater-section-content');
 
         let sectionContentDom = sectionContents.childNodes;
-        let sectionContentPane = this.paneContent.find('.section-contents-pane');
+        let sectionContentPane = self.paneContent.find('.section-contents-pane');
 
         //create section content pane prototype
-        let sectionContentPanePrototype = this.createElement({
+        let sectionContentPanePrototype = kerdx.createElement({
             element: 'div',
             attributes: {
                 style: { border: '1px solid #bbbbbb', margin: '.5em 0em' }, class: 'crater-section-content-row-pane row'
             },
             children: [
-                this.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-section-content-row' }),
-                this.createElement({
+                craterApp.craterWebparts.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-section-content-row' }),
+                kerdx.createElement({
                     element: 'span', attributes: { class: 'crater-section-webpart-name' }
                 }),
             ]
@@ -398,9 +383,9 @@ class Section extends ElementModifier {
             });
 
             sectionContentRowPane.find('.add-before-crater-section-content-row').addEventListener('click', event => {
-                this.paneContent.append(
-                    this.sharePoint.displayPanel(webpart => {
-                        let newSectionContent = this.sharePoint.appendWebpart(sectionContents, webpart.dataset.webpart);
+                self.paneContent.append(
+                    craterApp.displayPanel(webpart => {
+                        let newSectionContent = craterApp.appendWebpart(sectionContents, webpart.dataset.webpart);
                         sectionContentRowDom.before(newSectionContent.cloneNode(true));
                         newSectionContent.remove();
 
@@ -413,9 +398,9 @@ class Section extends ElementModifier {
             });
 
             sectionContentRowPane.find('.add-after-crater-section-content-row').addEventListener('click', event => {
-                this.paneContent.append(
-                    this.sharePoint.displayPanel(webpart => {
-                        let newSectionContent = this.sharePoint.appendWebpart(sectionContents, webpart.dataset.webpart);
+                self.paneContent.append(
+                    craterApp.displayPanel(webpart => {
+                        let newSectionContent = craterApp.appendWebpart(sectionContents, webpart.dataset.webpart);
                         sectionContentRowDom.after(newSectionContent.cloneNode(true));
                         newSectionContent.remove();
 
@@ -429,11 +414,11 @@ class Section extends ElementModifier {
         };
 
         //add new webpart to the section
-        this.paneContent.find('.new-component').addEventListener('click', event => {
-            this.paneContent.append(
+        self.paneContent.find('.new-component').addEventListener('click', event => {
+            self.paneContent.append(
                 //show the display panel and add the selected webpart
-                this.sharePoint.displayPanel(webpart => {
-                    let newSectionContent = this.sharePoint.appendWebpart(sectionContents, webpart.dataset.webpart);
+                craterApp.displayPanel(webpart => {
+                    let newSectionContent = craterApp.appendWebpart(sectionContents, webpart.dataset.webpart);
                     let newSectionContentRow = sectionContentPanePrototype.cloneNode(true);
                     sectionContentPane.append(newSectionContentRow);
 
@@ -443,32 +428,34 @@ class Section extends ElementModifier {
             );
         });
 
-        this.paneContent.findAll('.crater-section-content-row-pane').forEach((sectionContent, position) => {
+        self.paneContent.findAll('.crater-section-content-row-pane').forEach((sectionContent, position) => {
             //listen for events on all webparts
             sectionContentRowHandler(sectionContent, sectionContentDom[position]);
         });
 
         //monitor pane contents and note the changes
-        this.paneContent.addEventListener('mutated', event => {
-            this.sharePoint.attributes.pane.content[this.key].draft.pane.content = this.paneContent.innerHTML;
-            this.sharePoint.attributes.pane.content[this.key].draft.html = this.sharePoint.attributes.pane.content[this.key].draft.dom.outerHTML;
+        self.paneContent.addEventListener('mutated', event => {
+            craterApp.attributes.pane.content[self.key].draft.pane.content = self.paneContent.innerHTML;
+            craterApp.attributes.pane.content[self.key].draft.html = craterApp.attributes.pane.content[self.key].draft.dom.outerHTML;
         });
 
         //save the the noted changes when save button is clicked
-        this.paneContent.getParents('.crater-edit-window').find('#crater-editor-save').addEventListener('click', event => {
-            this.sharePoint.attributes.pane.content[this.key].content = this.paneContent.innerHTML;//update webpart
-            this.element.innerHTML = this.sharePoint.attributes.pane.content[this.key].draft.dom.innerHTML;
+        self.paneContent.getParents('.crater-edit-window').find('#crater-editor-save').addEventListener('click', event => {
+            craterApp.attributes.pane.content[self.key].content = self.paneContent.innerHTML;//update webpart
+            self.element.innerHTML = craterApp.attributes.pane.content[self.key].draft.dom.innerHTML;
 
-            this.element.css(this.sharePoint.attributes.pane.content[this.key].draft.dom.css());
+            self.element.css(craterApp.attributes.pane.content[self.key].draft.dom.css());
 
             let keyedElements = sectionContents.children;
             for (let i = 0; i < keyedElements.length; i++) {
-                this.craterWebparts[keyedElements[i].dataset.type]({ action: 'rendered', element: keyedElements[i], sharePoint: this.sharePoint });
+                craterApp.craterWebparts[keyedElements[i].dataset.type]({ action: 'rendered', element: keyedElements[i], sharePoint: craterApp });
             }
 
-            this.sharePoint.saveSettings(this.element, settings);
+            craterApp.saveSettings(self.element, settings);
         });
     }
+
+    return self;
 }
 
-export { Section };
+export { section };

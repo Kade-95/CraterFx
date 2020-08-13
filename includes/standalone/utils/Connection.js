@@ -1,15 +1,10 @@
-import { ElementModifier } from './ElementModifier';
-import { Func } from './Func';
-import { ISPHttpClientOptions, SPHttpClient, AadHttpClient, HttpClientResponse, IHttpClientOptions } from '@microsoft/sp-http';
+// import { ISPHttpClientOptions, SPHttpClient, AadHttpClient, HttpClientResponse, IHttpClientOptions } from '@microsoft/sp-http';
 
 class Connection {
     constructor(params) {
         Object.keys(params).map(key => {
             this[key] = params[key];
         });
-
-        // this.context = this['sharepoint'].context;
-        this.elementModifier = new ElementModifier();
     }
 
     getSite() {
@@ -26,6 +21,10 @@ class Connection {
         }
 
         return site;
+    }
+
+    getLocalApp(_id){
+        
     }
 
     fetchApp(_id) {

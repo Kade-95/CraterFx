@@ -1,19 +1,8 @@
-import { ElementModifier } from './../ElementModifier';
+function accordion() {
+    let self = {};
 
-class Accordion extends ElementModifier {
-    public params: any;
-    public paneContent: any;
-    public element: any;
-    public key: any;
-
-    constructor(params) {
-        super({ sharePoint: params.sharePoint });
-        this.sharePoint = params.sharePoint;
-        this.params = params;
-    }
-
-    public render(params) {
-        if (!this.func.isset(params.source))
+    self.render = function (params) {
+        if (!kerdx.isset(params.source))
             params.source = [
                 { title: 'Person One', content: 'Fat new smallness few supposing suspicion two. Course sir people worthy horses add entire suffer. How one dull get busy dare far. At principle perfectly by sweetness do. As mr started arrival subject by believe. Strictly numerous outlived kindness whatever on we no on addition.' },
                 { title: 'Person Two', content: 'In on announcing if of comparison pianoforte projection. Maids hoped gay yet bed asked blind dried point. On abroad danger likely regret twenty edward do. Too horrible consider followed may differed age. An rest if more five mr of. Age just her rank met down way. Attended required so in cheerful an. Domestic replying she resolved him for did. Rather in lasted no within no.' },
@@ -21,11 +10,11 @@ class Accordion extends ElementModifier {
             ];
 
         let title = 'Accordion';
-        let accordion = this.createKeyedElement({ element: 'div', attributes: { class: 'crater-component crater-accordion', 'data-type': 'accordion' } });
+        let accordion = craterApp.craterWebparts.createKeyedElement({ element: 'div', attributes: { class: 'crater-component crater-accordion', 'data-type': 'accordion' } });
 
         accordion.makeElement({
             element: 'div', attributes: { class: 'crater-accordion-title', id: 'crater-accordion-title' }, children: [
-                { element: 'i', attributes: { class: 'crater-accordion-title-icon', 'data-icon': this.sharePoint.icons.eye, id: 'crater-accordion-title-icon' } },
+                { element: 'i', attributes: { class: 'crater-accordion-title-icon', 'data-icon': craterApp.icons.eye, id: 'crater-accordion-title-icon' } },
                 { element: 'p', text: title, attributes: { id: 'crater-accordion-title-text' } }
             ]
         });
@@ -33,16 +22,16 @@ class Accordion extends ElementModifier {
         let content = accordion.makeElement({ element: 'div', attributes: { class: 'crater-accordion-content', id: 'crater-accordion-content' } });
 
         let settings = {
-            toggleOpen: this.sharePoint.icons.eye,
-            toggleClose: this.sharePoint.icons['eye-slash'],
+            toggleOpen: craterApp.icons.eye,
+            toggleClose: craterApp.icons['eye-slash'],
             contentTitle: {},
             contentDetails: {}
         };
 
-        this.sharePoint.saveSettings(accordion, settings);
+        craterApp.saveSettings(accordion, settings);
 
         for (let row of params.source) {
-            content.append(this.createElement({
+            content.append(kerdx.createElement({
                 element: 'div', attributes: { class: 'crater-accordion-content-row' }, children: [
                     {
                         element: 'span', attributes: { class: 'crater-accordion-content-row-title' }, children: [
@@ -62,7 +51,7 @@ class Accordion extends ElementModifier {
         return accordion;
     }
 
-    public rendered(params) {
+    self.rendered = function (params) {
 
         this.element = params.element;
         this.key = params.element.dataset.key;
@@ -164,28 +153,28 @@ class Accordion extends ElementModifier {
         }
     }
 
-    public setUpPaneContent(params): any {
+    self.setUpPaneContent = function (params) {
         this.element = params.element;
         this.key = params.element.dataset.key;
         let settings = JSON.parse(params.element.dataset.settings);
 
-        this.paneContent = this.createElement({
+        this.paneContent = kerdx.createElement({
             element: 'div',
             attributes: { class: 'crater-property-content' }
         }).monitor();
 
-        if (this.sharePoint.attributes.pane.content[this.key].draft.pane.content != '') {
-            this.paneContent.innerHTML = this.sharePoint.attributes.pane.content[this.key].draft.pane.content;
+        if (craterApp.attributes.pane.content[this.key].draft.pane.content != '') {
+            this.paneContent.innerHTML = craterApp.attributes.pane.content[this.key].draft.pane.content;
         }
-        else if (this.sharePoint.attributes.pane.content[this.key].content != '') {
-            this.paneContent.innerHTML = this.sharePoint.attributes.pane.content[this.key].content;
+        else if (craterApp.attributes.pane.content[this.key].content != '') {
+            this.paneContent.innerHTML = craterApp.attributes.pane.content[this.key].content;
         }
         else {
-            let accordionList = this.sharePoint.attributes.pane.content[this.key].draft.dom.find('.crater-accordion-content');
+            let accordionList = craterApp.attributes.pane.content[this.key].draft.dom.find('.crater-accordion-content');
             let accordionListRows = accordionList.findAll('.crater-accordion-content-row');
             this.paneContent.makeElement({
                 element: 'div', children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'button', attributes: { class: 'btn new-component', style: { display: 'inline-block', borderRadius: '5px' } }, text: 'Add New'
                     })
                 ]
@@ -193,34 +182,34 @@ class Accordion extends ElementModifier {
 
             this.paneContent.makeElement({
                 element: 'div', attributes: { class: 'title-pane card' }, children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'card-title' }, children: [
-                            this.createElement({
+                            kerdx.createElement({
                                 element: 'h2', attributes: { class: 'title' }, text: 'Accordion Title'
                             })
                         ]
                     }),
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'row' }, children: [
-                            this.cell({
+                            kerdx.cell({
                                 element: 'i', name: 'icon', edit: 'upload-icon', dataAttributes: { class: 'crater-icon', 'data-icon': this.element.find('.crater-accordion-title-icon').dataset.icon }
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'title', value: this.element.find('.crater-accordion-title').textContent
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'backgroundcolor', dataAttributes: { type: 'color' }
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'color', dataAttributes: { type: 'color' }
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'fontsize', value: this.element.find('.crater-accordion-title').css()['font-size']
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'height', value: this.element.find('.crater-accordion-title').css()['height'] || ''
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'select', name: 'Show', options: ['Yes', 'No']
                             })
                         ]
@@ -232,28 +221,28 @@ class Accordion extends ElementModifier {
 
             this.paneContent.makeElement({
                 element: 'div', attributes: { class: 'toggle-pane card' }, children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'card-title' }, children: [
-                            this.createElement({
+                            kerdx.createElement({
                                 element: 'h2', attributes: { class: 'title' }, text: 'Toggle Settings'
                             })
                         ]
                     }),
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'row' }, children: [
-                            this.cell({
+                            kerdx.cell({
                                 element: 'i', name: 'Open Icon', edit: 'upload-icon', dataAttributes: { class: 'crater-icon', 'data-icon': settings.toggleOpen }
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'i', name: 'Close Icon', edit: 'upload-icon', dataAttributes: { class: 'crater-icon', 'data-icon': settings.toggleClose }
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'select', name: 'Border Type', options: ['None', 'Circle', 'Square', 'Curved']
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'select', name: 'Show', options: ['Yes', 'No']
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'select', name: 'Position', options: ['Right', 'Left']
                             })
                         ]
@@ -263,35 +252,35 @@ class Accordion extends ElementModifier {
 
             this.paneContent.makeElement({
                 element: 'div', attributes: { class: 'content-title-pane card' }, children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'card-title' }, children: [
-                            this.createElement({
+                            kerdx.createElement({
                                 element: 'h2', attributes: { class: 'title' }, text: 'Content Title Settings'
                             })
                         ]
                     }),
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'row' }, children: [
-                            this.cell({
-                                element: 'input', name: 'Font Size', list: this.func.pixelSizes
+                            kerdx.cell({
+                                element: 'input', name: 'Font Size', list: kerdx.pixelSizes
                             }),
-                            this.cell({
-                                element: 'input', name: 'Font Style', list: this.func.fontStyles
+                            kerdx.cell({
+                                element: 'input', name: 'Font Style', list: kerdx.fontStyles
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'Color', dataAttributes: { type: 'color', value: '#000000' }
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'Background Color', dataAttributes: { type: 'color', value: '#ffffff' }
                             }),
-                            this.cell({
-                                element: 'input', name: 'Border', list: this.func.borderTypes
+                            kerdx.cell({
+                                element: 'input', name: 'Border', list: kerdx.borderTypes
                             }),
-                            this.cell({
-                                element: 'input', name: 'Boldness', list: this.func.boldness
+                            kerdx.cell({
+                                element: 'input', name: 'Boldness', list: kerdx.boldness
                             }),
-                            this.cell({
-                                element: 'input', name: 'Alignment', list: this.func.alignment
+                            kerdx.cell({
+                                element: 'input', name: 'Alignment', list: kerdx.alignment
                             }),
                         ]
                     })
@@ -300,35 +289,35 @@ class Accordion extends ElementModifier {
 
             this.paneContent.makeElement({
                 element: 'div', attributes: { class: 'content-details-pane card' }, children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'card-title' }, children: [
-                            this.createElement({
+                            kerdx.createElement({
                                 element: 'h2', attributes: { class: 'title' }, text: 'Content Details Settings'
                             })
                         ]
                     }),
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'row' }, children: [
-                            this.cell({
-                                element: 'input', name: 'Font Size', list: this.func.pixelSizes
+                            kerdx.cell({
+                                element: 'input', name: 'Font Size', list: kerdx.pixelSizes
                             }),
-                            this.cell({
-                                element: 'input', name: 'Font Style', list: this.func.fontStyles
+                            kerdx.cell({
+                                element: 'input', name: 'Font Style', list: kerdx.fontStyles
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'Color', dataAttributes: { type: 'color', value: '#000000' }
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'Background Color', dataAttributes: { type: 'color', value: '#ffffff' }
                             }),
-                            this.cell({
-                                element: 'input', name: 'Height', list: this.func.pixelSizes
+                            kerdx.cell({
+                                element: 'input', name: 'Height', list: kerdx.pixelSizes
                             }),
-                            this.cell({
-                                element: 'input', name: 'Border', list: this.func.borderTypes
+                            kerdx.cell({
+                                element: 'input', name: 'Border', list: kerdx.borderTypes
                             }),
-                            this.cell({
-                                element: 'input', name: 'Alignment', list: this.func.alignment
+                            kerdx.cell({
+                                element: 'input', name: 'Alignment', list: kerdx.alignment
                             }),
                         ]
                     })
@@ -337,19 +326,19 @@ class Accordion extends ElementModifier {
 
             this.paneContent.makeElement({
                 element: 'div', attributes: { class: 'settings-pane card' }, children: [
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'card-title' }, children: [
-                            this.createElement({
+                            kerdx.createElement({
                                 element: 'h2', attributes: { class: 'title' }, text: 'Other Settings'
                             })
                         ]
                     }),
-                    this.createElement({
+                    kerdx.createElement({
                         element: 'div', attributes: { class: 'row' }, children: [
-                            this.cell({
+                            kerdx.cell({
                                 element: 'select', name: 'Show Divider', options: ['Yes', 'No']
                             }),
-                            this.cell({
+                            kerdx.cell({
                                 element: 'input', name: 'Title Hover Color', dataAttributes: { type: 'color' }
                             })
                         ]
@@ -361,12 +350,12 @@ class Accordion extends ElementModifier {
         return this.paneContent;
     }
 
-    public generatePaneContent(params) {
-        let listPane = this.createElement({
+    self.generatePaneContent = function (params) {
+        let listPane = kerdx.createElement({
             element: 'div', attributes: { class: 'card list-pane' }, children: [
-                this.createElement({
+                kerdx.createElement({
                     element: 'div', attributes: { class: 'card-title' }, children: [
-                        this.createElement({
+                        kerdx.createElement({
                             element: 'h2', attributes: { class: 'title' }, text: 'Accordion List'
                         })
                     ]
@@ -379,11 +368,11 @@ class Accordion extends ElementModifier {
                 element: 'div',
                 attributes: { class: 'crater-list-row-pane row' },
                 children: [
-                    this.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-list-content-row' }),
-                    this.cell({
+                    craterApp.craterWebparts.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-list-content-row' }),
+                    kerdx.cell({
                         element: 'span', edit: 'change-text', name: 'Title', html: params.list[i].find('#title').innerHTML
                     }),
-                    this.cell({
+                    kerdx.cell({
                         element: 'span', edit: 'change-text', name: 'Content', html: params.list[i].find('#content').innerHTML
                     }),
                 ]
@@ -393,35 +382,35 @@ class Accordion extends ElementModifier {
         return listPane;
     }
 
-    public listenPaneContent(params) {
+    self.listenPaneContent = function (params) {
         this.element = params.element;
         this.key = params.element.dataset.key;
         let settings = JSON.parse(params.element.dataset.settings);
-        let settingsClone: any = {};
+        let settingsClone = {};
 
-        this.paneContent = this.sharePoint.app.find('.crater-property-content').monitor();
-        let draftDom = this.sharePoint.attributes.pane.content[this.key].draft.dom;
+        this.paneContent = craterApp.app.find('.crater-property-content').monitor();
+        let draftDom = craterApp.attributes.pane.content[this.key].draft.dom;
 
         let peopleList = draftDom.find('.crater-accordion-content');
         let peopleListRows = peopleList.findAll('.crater-accordion-content-row');
 
-        let listRowPrototype = this.createElement({
+        let listRowPrototype = kerdx.createElement({
             element: 'div',
             attributes: {
                 class: 'crater-list-row-pane row'
             },
             children: [
-                this.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-list-content-row' }),
-                this.cell({
+                craterApp.craterWebparts.paneOptions({ options: ['AB', 'AA', 'D'], owner: 'crater-list-content-row' }),
+                kerdx.cell({
                     element: 'span', edit: 'change-text', name: 'Title', value: 'Title'
                 }),
-                this.cell({
+                kerdx.cell({
                     element: 'span', edit: 'change-text', name: 'Content', value: 'Content'
                 }),
             ]
         });
 
-        let peopleContentRowPrototype = this.createElement({
+        let peopleContentRowPrototype = kerdx.createElement({
             element: 'div', attributes: { class: 'crater-accordion-content-row' }, children: [
                 {
                     element: 'span', attributes: { class: 'crater-accordion-content-row-title' }, children: [
@@ -558,8 +547,8 @@ class Accordion extends ElementModifier {
         });
 
         this.paneContent.addEventListener('mutated', event => {
-            this.sharePoint.attributes.pane.content[this.key].draft.pane.content = this.paneContent.innerHTML;
-            this.sharePoint.attributes.pane.content[this.key].draft.html = this.sharePoint.attributes.pane.content[this.key].draft.dom.outerHTML;
+            craterApp.attributes.pane.content[this.key].draft.pane.content = this.paneContent.innerHTML;
+            craterApp.attributes.pane.content[this.key].draft.html = craterApp.attributes.pane.content[this.key].draft.dom.outerHTML;
         });
 
         this.paneContent.getParents('.crater-edit-window').find('#crater-editor-save').addEventListener('click', event => {
@@ -567,7 +556,7 @@ class Accordion extends ElementModifier {
 
             this.element.css(draftDom.css());
 
-            this.sharePoint.attributes.pane.content[this.key].content = this.paneContent.innerHTML;//update webpart
+            craterApp.attributes.pane.content[this.key].content = this.paneContent.innerHTML;//update webpart
             settings.toggleOpen = toggleSettings.find('#Open-Icon-cell').dataset.icon;
             settings.toggleClose = toggleSettings.find('#Close-Icon-cell').dataset.icon;
             settings.toggleBorderType = toggleSettings.find('#Border-Type-cell').value;
@@ -593,21 +582,21 @@ class Accordion extends ElementModifier {
             settings.contentDetails.boldness = contentDetailsSettings.find('#Height-cell').value;
             settings.contentDetails.textAlign = contentDetailsSettings.find('#Alignment-cell').value;
 
-            this.sharePoint.saveSettings(this.element, settings, settingsClone);
+            craterApp.saveSettings(this.element, settings, settingsClone);
         });
     }
 
-    public update(params) {
+    self.update = function (params) {
         this.element = params.element;
         this.key = this.element.dataset['key'];
-        let draftDom = this.sharePoint.attributes.pane.content[this.key].draft.dom;
+        let draftDom = craterApp.attributes.pane.content[this.key].draft.dom;
         this.paneContent = this.setUpPaneContent(params);
 
-        let paneConnection = this.sharePoint.app.find('.crater-property-connection');
+        let paneConnection = craterApp.app.find('.crater-property-connection');
         let metadata = params.connection.metadata || {};
         let options = params.connection.options || [];
-        
-        let updateWindow = this.createForm({
+
+        let updateWindow = kerdx.createForm({
             title: 'Setup Meta Data', attributes: { id: 'meta-data-form', class: 'form' },
             contents: {
                 title: { element: 'select', attributes: { id: 'meta-data-title', name: 'Title' }, options, selected: metadata.title },
@@ -631,32 +620,34 @@ class Accordion extends ElementModifier {
         });
 
 
-        if (!this.func.isnull(paneConnection)) {
+        if (!kerdx.isnull(paneConnection)) {
             paneConnection.getParents('.crater-edit-window').find('#crater-editor-save').addEventListener('click', event => {
                 this.element.innerHTML = draftDom.innerHTML;
 
                 this.element.css(draftDom.css());
 
-                this.sharePoint.attributes.pane.content[this.key].content = this.paneContent.innerHTML;//update webpart
+                craterApp.attributes.pane.content[this.key].content = this.paneContent.innerHTML;//update webpart
             });
         }
 
         return updateWindow;
     }
 
-    public runUpdate(params) {
-        let source = this.func.extractFromJsonArray(params.connection.metadata, params.source);
-		let key = this.key || params.container.dataset.key;
+    self.runUpdate = function (params) {
+        let source = kerdx.extractFromJsonArray(params.connection.metadata, params.source);
+        let key = this.key || params.container.dataset.key;
         let newContent = this.render({ source });
         params.container.find('.crater-accordion-content').innerHTML = newContent.find('.crater-accordion-content').innerHTML;
-        this.sharePoint.attributes.pane.content[key].draft.html = params.container.outerHTML;
+        craterApp.attributes.pane.content[key].draft.html = params.container.outerHTML;
 
-        if (params.flag == true) {            
+        if (params.flag == true) {
             this.paneContent.find('.list-pane').innerHTML = this.generatePaneContent({ list: newContent.findAll('.crater-accordion -content-row') }).innerHTML;
 
-            this.sharePoint.attributes.pane.content[key].draft.pane.content = this.paneContent.innerHTML;
+            craterApp.attributes.pane.content[key].draft.pane.content = this.paneContent.innerHTML;
         }
     }
+
+    return self;
 }
 
-export { Accordion };
+export { accordion };

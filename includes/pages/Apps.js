@@ -18,12 +18,12 @@ class Apps {
             }
         ]);
 
-        this.url = perceptor.urlSplitter(location.href);
+        this.url = kerdx.urlSplitter(location.href);
         let page = this.url.vars.page;
         if (!Object.values(this.url.vars).length) {
             this.view(mainBody.find('#main-container-body-main-window'));
         }
-        else if (perceptor.isset(this[page])) {
+        else if (kerdx.isset(this[page])) {
             this[page](mainBody.find('#main-container-body-main-window'));
         }
         else {
@@ -34,16 +34,16 @@ class Apps {
     view(container) {
         system.get({ collection: 'apps', query: {}, projection: { id: 1, page: 1, lastFetched: 1 }, many: true }).then(result => {
 
-            let appsTable = perceptor.createTable({ title: 'Apps Table', contents: result, search: true, sort: true });
+            let appsTable = kerdx.createTable({ title: 'Apps Table', contents: result, search: true, sort: true });
             container.render(appsTable);
-            perceptor.listenTable({ options: ['view'], table: appsTable }, {
+            kerdx.listenTable({ options: ['view'], table: appsTable }, {
                 click: event => {
                     let target = event.target;
-                    let { row } = target.getParents('.perceptor-table-column-cell').dataset;
-                    let table = target.getParents('.perceptor-table');
-                    let id = table.find(`.perceptor-table-column[data-name="_id"]`).find(`.perceptor-table-column-cell[data-row="${row}"]`).dataset.value;
+                    let { row } = target.getParents('.kerdx-table-column-cell').dataset;
+                    let table = target.getParents('.kerdx-table');
+                    let id = table.find(`.kerdx-table-column[data-name="_id"]`).find(`.kerdx-table-column-cell[data-row="${row}"]`).dataset.value;
 
-                    if (target.id == 'perceptor-table-option-view') {
+                    if (target.id == 'kerdx-table-option-view') {
                         system.redirect('apps.html?page=show&id=' + id);
                     }
                 }

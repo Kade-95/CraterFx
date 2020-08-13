@@ -1,4 +1,4 @@
-let Images: any = {};
+let Images = {};
 
 Images.accordion = "https://www.yagendoo.com/media/icons/256/icon-accordion-menu.png";
 

@@ -1,8 +1,8 @@
 .crater .card {
     display: block;
     margin: 5em 1em;
-    background-color: var(--secondary-color);
-    color: var(--accient-color);
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
     padding-bottom: .5em;
 }
 
@@ -18,11 +18,11 @@
 
 .crater .card-title .title {
     letter-spacing: .1em;
-    background-color: var(--dark-accient-color);
+    background-color: var(--dark-secondary-color);
     padding: .3em;
     text-align: center;
     font-size: 1em;
-    color: var(--secondary-color);
+    color: var(--primary-color);
     text-transform: uppercase;
     font-weight: bold;
     text-decoration: none;
@@ -47,7 +47,7 @@
 }
 
 .crater .row:hover{
-    border: 1px solid var(--light-accient-color);
+    border: 1px solid var(--light-secondary-color);
 }
 
 .crater .cell {
@@ -72,8 +72,8 @@
 
 .crater .cell-label {
     text-transform: uppercase;
-    background-color: var(--dark-accient-color);
-    color: var(--dark-secondary-color);
+    background-color: var(--dark-secondary-color);
+    color: var(--dark-primary-color);
     padding: 0.3em;
     text-align: center;
     font-weight: 400;
@@ -83,7 +83,7 @@
     padding: 0.3em;
     outline: none;
     border: none;
-    color: var(--accient-color);
+    color: var(--secondary-color);
     min-height: 30px;
     text-align: center;
     justify-self: center;

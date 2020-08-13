@@ -19,7 +19,7 @@ class CraterUi {
         let main = document.body.find('#main-window');
 
         let panelLink = (name, mClass) => {
-            let profileLink = perceptor.createElement({
+            let profileLink = kerdx.createElement({
                 element: 'a', attributes: { class: `panel-link ${name}`, href: name + '.html', title: name }, children: [
                     { element: 'i', attributes: { class: `panel-image ${mClass}` } },
                     { element: 'a', attributes: { class: 'panel-text' }, text: name }
@@ -37,7 +37,7 @@ class CraterUi {
             userImage = 'images/logo.png';
         }  
 
-        let panel = perceptor.createElement({
+        let panel = kerdx.createElement({
             element: 'span', attributes: { id: 'panel' }, children: [
                 panelLink('profile', userImage),
                 panelLink('dashboard', 'fas fa-vector-square'),
@@ -192,8 +192,8 @@ class CraterUi {
         system.get({ collection: 'users', query: { _id: user }, changeQuery: { _id: 'objectid' } }).then(result => {
             let birthday = result.birthday;
             let age;
-            if (perceptor.notNull(birthday)) {
-                age = (perceptor.dateWithToday(result.birthday).diff / 365.25).toString().slice(1, 3)
+            if (kerdx.notNull(birthday)) {
+                age = (kerdx.dateWithToday(result.birthday).diff / 365.25).toString().slice(1, 3)
             }
             bodyContainer.makeElement(
                 [
@@ -274,7 +274,7 @@ class CraterUi {
                                                         element: 'p', attributes: { class: 'show-user-work-detail-single' }, children: [
                                                             { element: 'i', attributes: { class: 'icon fas fa-money-bill' } },
                                                             { element: 'p', attributes: { class: 'show-user-work-detail-single-name' }, text: 'Salary' },
-                                                            { element: 'p', attributes: { class: 'show-user-work-detail-single-value' }, text: '$' + perceptor.addCommaToMoney(result.salary || 0) }
+                                                            { element: 'p', attributes: { class: 'show-user-work-detail-single-value' }, text: '$' + kerdx.addCommaToMoney(result.salary || 0) }
                                                         ]
                                                     },
                                                 ]
@@ -289,7 +289,7 @@ class CraterUi {
             );
 
             bodyContainer.find('#edit-profile-picture').addEventListener('click', event => {
-                let uploadImageForm = perceptor.createElement({
+                let uploadImageForm = kerdx.createElement({
                     element: 'form', attributes: { class: 'single-upload-form' }, children: [
                         {
                             element: 'span', attributes: { class: 'single-upload-form-controls' }, children: [
@@ -303,7 +303,7 @@ class CraterUi {
                     ]
                 });
 
-                let popUp = perceptor.popUp(uploadImageForm);
+                let popUp = kerdx.popUp(uploadImageForm);
 
                 uploadImageForm.find('#new-image').onChanged(value => {
                     uploadImageForm.find('#preview-image').src = value.src;
@@ -311,7 +311,7 @@ class CraterUi {
 
                 uploadImageForm.find('#upload').addEventListener('click', event => {
                     event.preventDefault();
-                    let data = perceptor.jsonForm(uploadImageForm);
+                    let data = kerdx.jsonForm(uploadImageForm);
                     data.action = 'changeDp';
 
                     system.connect({ data }).then(result => {
@@ -341,7 +341,7 @@ class CraterUi {
             });
 
             bodyContainer.find('#edit-profile').addEventListener('click', event => {
-                let editForm = perceptor.createForm({
+                let editForm = kerdx.createForm({
                     title: 'Edit Profile', attributes: { enctype: 'multipart/form-data', id: 'edit-profile-form', class: 'form', style: { border: '1px solid var(--secondary-color)' } },
                     contents: {
                         userName: { element: 'input', attributes: { id: 'user-name', name: 'userName', value: result.userName } },
@@ -360,18 +360,18 @@ class CraterUi {
                     columns: 2
                 });
 
-                let popUp = perceptor.popUp(editForm);
+                let popUp = kerdx.popUp(editForm);
                 popUp.find('#toggle-window').click();
 
                 editForm.addEventListener('submit', event => {
                     event.preventDefault();
-                    let formValidation = perceptor.validateForm(editForm, { names: ['userName', 'email'] });
+                    let formValidation = kerdx.validateForm(editForm, { names: ['userName', 'email'] });
 
                     if (!formValidation.flag) {
                         editForm.setState({ name: 'error', attributes: { style: { display: 'unset' } }, text: `Form ${formValidation.elementName} is faulty` });
                         return;
                     }
-                    let data = perceptor.jsonForm(editForm);
+                    let data = kerdx.jsonForm(editForm);
                     data.action = 'editProfile';
                     system.connect({ data }).then(result => {
                         if (result == true) {
@@ -399,14 +399,14 @@ class CraterUi {
     changePassword() {
         let user = document.body.dataset.user;
         let bodyContainer = document.body.find('#main-container-body');
-        let loading = perceptor.createElement({ element: 'span', attributes: { class: 'loading loading-medium' } });
+        let loading = kerdx.createElement({ element: 'span', attributes: { class: 'loading loading-medium' } });
 
-        let passwordForm = perceptor.createForm({
+        let passwordForm = kerdx.createForm({
             title: 'Change Password', attributes: { enctype: 'multipart/form-data', id: 'change-password-form', class: 'form' },
             contents: {
-                currentPassword: { element: 'input', attributes: { id: 'current-password', name: 'currentPassword', type: 'password' }, label: perceptor.createElement({ element: 'a', text: 'Current Password', children: [{ element: 'i', attributes: { class: 'icon fas fa-eye' } }] }).innerHTML },
-                newPassword: { element: 'input', attributes: { id: 'new-password', name: 'newPassword', type: 'password' }, note: 'Password must not be less than 8 characters, Should have atleast 1 uppercase, 1 lowercase, 1 number and 1 symbol', label: perceptor.createElement({ element: 'a', text: 'New Password', children: [{ element: 'i', attributes: { class: 'icon fas fa-eye' } }] }).innerHTML },
-                verifyPassword: { element: 'input', attributes: { id: 'verify-password', name: 'verifyPassword', type: 'password' }, label: perceptor.createElement({ element: 'a', text: 'Verify Password', children: [{ element: 'i', attributes: { class: 'icon fas fa-eye' } }] }).innerHTML },
+                currentPassword: { element: 'input', attributes: { id: 'current-password', name: 'currentPassword', type: 'password' }, label: kerdx.createElement({ element: 'a', text: 'Current Password', children: [{ element: 'i', attributes: { class: 'icon fas fa-eye' } }] }).innerHTML },
+                newPassword: { element: 'input', attributes: { id: 'new-password', name: 'newPassword', type: 'password' }, note: 'Password must not be less than 8 characters, Should have atleast 1 uppercase, 1 lowercase, 1 number and 1 symbol', label: kerdx.createElement({ element: 'a', text: 'New Password', children: [{ element: 'i', attributes: { class: 'icon fas fa-eye' } }] }).innerHTML },
+                verifyPassword: { element: 'input', attributes: { id: 'verify-password', name: 'verifyPassword', type: 'password' }, label: kerdx.createElement({ element: 'a', text: 'Verify Password', children: [{ element: 'i', attributes: { class: 'icon fas fa-eye' } }] }).innerHTML },
             },
             buttons: {
                 submit: { element: 'button', attributes: { id: 'submit' }, text: 'Change', state: { name: 'submit', owner: '#change-password-form' } },
@@ -438,10 +438,10 @@ class CraterUi {
             event.preventDefault();
             passwordForm.setState({ name: 'error', attributes: { style: { display: 'none' } }, text: '' });
 
-            if (perceptor.isPasswordValid(newPassword.value)) {
+            if (kerdx.isPasswordValid(newPassword.value)) {
                 if (newPassword.value == verifyPassword.value) {
                     passwordForm.getState({ name: 'submit' }).replaceWith(loading);
-                    let data = perceptor.jsonForm(passwordForm);
+                    let data = kerdx.jsonForm(passwordForm);
                     data.action = 'changePassword';
                     delete data.verifyPassword;
 

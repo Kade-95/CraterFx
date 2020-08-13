@@ -1,8 +1,10 @@
-import { PropertyPane, CraterWebParts, Connection, Images, Icons } from '../../externals/scr/';
+import { CraterWebParts } from './CraterWebParts.js';
+import { Connection } from './Connection.js';
+import { Icons } from './Icons.js';
+import { Images } from './Images.js';
+import { PropertyPane } from './PropertyPane.js';
 
-export class App {
-
-
+export class CraterApp {
 	constructor() {
 		this.domContent;
 		this.app;
@@ -25,7 +27,26 @@ export class App {
 		this.containers = [
 			'section', 'tab', 'panel', 'crater', 'row'
 		];
-		this.webparts = ['Panel', 'List', 'Slider', 'Counter', 'Tiles', 'News', 'Table', 'TextArea', 'Icons', 'Buttons', 'Count Down', 'Tab', 'Events', 'Carousel', 'Map', 'Date List', 'Instagram', 'Facebook', 'Youtube', 'Twitter', 'Before After', 'Event', 'PowerBI', 'Employee Directory', 'Birthday', 'Calendar', 'Frame', 'Accordion', 'News Carousel', 'Three Dimensional Slider', 'Background', 'Row', 'Image', 'Image Caption'];
+		this.webparts = [
+			'Panel', 'List', 'Slider', 'Counter', 'Tiles', 'News', 'Table', 'TextArea', 'Icons', 'Buttons', 'Count Down', 'Tab', 'Events', 'Carousel', 'Map', 'Date List', 'Instagram', 'Facebook', 'Youtube', 'Twitter', 'Before After', 'Event', 'PowerBI', 'Employee Directory', 'Birthday', 'Calendar', 'Frame', 'Accordion', 'News Carousel', 'Three Dimensional Slider', 'Background', 'Row', 'Image', 'Image Caption'
+		];
+
+		this.properties = {
+			page: location.origin + location.pathname,
+			dom: {
+				generated: false,
+				content: ""
+			},
+			pane: {
+				generated: false,
+				content: {}
+			},
+			states: {
+				currentPosition: 0,
+				data: []
+			}
+		};
+
 		this.attributes = {
 			page: location.origin + location.pathname,
 			dom: {
@@ -50,22 +71,25 @@ export class App {
 		this.connection = new Connection({ sharepoint: this });
 	}
 
-	render() {
+	render(params = {}) {
+		this.domElement = params.container || document;
+		this.craterWebparts.loadCss(this.domElement.head);
+
 		this.connection.context = this.context;
 		if (!this.renderedOnce) {
 			this.attributes['_id'] = this.properties.id;
 			if (this.properties['deleted'] == true) {
-				this.domElement.textContent = 'Crater Deleted';
+				this.domElement.body.textContent = 'Crater Deleted';
 				return;
 			}
 
-			this.app = this.elementModifier.createElement({
+			this.app = kerdx.createElement({
 				element: 'div', attributes: { class: 'crater', id: 'webpart-container', style: { width: '100%', zIndex: '1' }, text: 'Loading Crater...' }
 			}).monitor();
 
 			let display = () => {
 				if (this.attributes.dom.generated && this.attributes.dom.content != '') {// check if webpart has been created before
-					this.domContent = this.elementModifier.createElement(this.attributes.dom.content);
+					this.domContent = kerdx.createElement(this.attributes.dom.content);
 				}
 				else {
 					this.domContent = this.appendWebpart(this.app, 'crater');
@@ -87,7 +111,7 @@ export class App {
 					element.remove();
 				});
 
-				if (!this.func.isnull(this.domContent)) {
+				if (!kerdx.isnull(this.domContent)) {
 					this.app.addEventListener('click', event => {
 						let element = event.target;
 						if (!(element.classList.contains('crater-display-panel') || element.getParents('.crater-display-panel') || element.classList.contains('new-component'))) {
@@ -112,7 +136,7 @@ export class App {
 									alert('Crater Cloning complete');
 								}
 								else {
-									let choose = this.elementModifier.choose({ note: 'What do you want to do?', options: ["Copy", "Clone"] });
+									let choose = kerdx.choose({ note: 'What do you want to do?', options: ["Copy", "Clone"] });
 
 									this.app.append(choose.display);
 									choose.choice.then((res) => {
@@ -161,16 +185,15 @@ export class App {
 				}
 			};
 
-			this.domElement.appendChild(this.app);
-
+			this.domElement.body.appendChild(this.app);
 			if (!this.isLocal) {
 				this.connection.fetchApp(this.properties.id)
 					.then(result => {
-						if (!this.func.isnull(result)) {
+						if (!kerdx.isnull(result)) {
 							this.attributes = result;
 						}
 						else {
-							this.func.objectCopy(this.properties, this.attributes);
+							kerdx.objectCopy(this.properties, this.attributes);
 						}
 
 						display();
@@ -210,13 +233,13 @@ export class App {
 				this.craterWebparts[type]({ action: 'rendered', element: keyedElements[i], sharePoint: this });
 				let settings = this.attributes.pane.content[keyedElements[i].dataset.key].settings;
 
-				if (this.func.isset(settings) && Object.keys(settings).length != 0) {
+				if (kerdx.isset(settings) && Object.keys(settings).length != 0) {
 					this.saveSettings(keyedElements[i], settings);
 					settings = {};
 				}
 
 				let connection = this.attributes.pane.content[keyedElements[i].dataset.key].connection;
-				if (this.connectable.includes(type) && this.func.isset(connection) && connection.realTime == 'Yes') {
+				if (this.connectable.includes(type) && kerdx.isset(connection) && connection.realTime == 'Yes') {
 					let details = connection.details;
 					if (connection.type == 'RSS Feed') {
 						this.connection.getRSSFeed(details.Link, details.Count, details.Keywords).then(source => {
@@ -239,13 +262,14 @@ export class App {
 		if (!(element.classList.contains('crater-component'))) webpart = element.getParents('.crater-component');
 		let openAt = 'same window';
 		let webpartSettings = webpart.dataset.settings;
-		if (this.func.isset(webpartSettings)) {
+		if (kerdx.isset(webpartSettings)) {
 			webpartSettings = JSON.parse(webpartSettings);
 			openAt = webpartSettings.linkWindow || openAt;
 		}
 		if (openAt.toLowerCase() == 'pop up') {
-			let popUp = this.elementModifier.popUp({ source, close: this.images.close, maximize: this.images.maximize, minimize: this.images.minimize });
-			webpart.append(popUp);
+			let content = kerdx.createElement({ element: 'iframe', attributes: { src: source } });
+
+			let popUp = kerdx.popUp(content, { attributes: { style: { width: '100%', height: '100%' } } });
 			this.expandHeight();
 		}
 		else if (openAt.toLowerCase() == 'new window') {
@@ -274,7 +298,7 @@ export class App {
 		parent.append(element);
 		this.craterWebparts[webpart]({ action: 'rendered', element, sharePoint: this });
 
-		if (this.func.isset(this.domContent)) {
+		if (kerdx.isset(this.domContent)) {
 			this.craterWebparts['crater']({ action: 'rendered', element: this.domContent, sharePoint: this });
 		}
 		return element;
@@ -283,7 +307,7 @@ export class App {
 	displayPanel(selected) {
 		this.webparts.sort();
 
-		this.displayPanelWindow = this.elementModifier.createElement({
+		this.displayPanelWindow = kerdx.createElement({
 			element: 'div', attributes: { class: 'crater-display-panel' }
 		});
 
@@ -334,7 +358,7 @@ export class App {
 
 		this.displayPanelWindow.addEventListener('click', event => {
 			let element = event.target;
-			if (element.classList.contains('crater-single-webpart') || !this.func.isnull(element.getParents('.crater-single-webpart'))) {
+			if (element.classList.contains('crater-single-webpart') || !kerdx.isnull(element.getParents('.crater-single-webpart'))) {
 				//   //select webpart to append
 				if (!element.classList.contains('crater-single-webpart')) element = element.getParents('.crater-single-webpart');
 				selected(element);
@@ -349,13 +373,13 @@ export class App {
 	updateDisplayPaneWebPart(params) {
 		this.displayPanelWindow.find('#crater-select-webpart').innerHTML = '';//clear window
 		for (let single of params.webparts) {
-			let name = this.func.stringReplace(single.toLowerCase(), ' ', '');
+			let name = kerdx.stringReplace(single.toLowerCase(), ' ', '');
 			this.displayPanelWindow.find('#crater-select-webpart').makeElement({
 				element: 'div', attributes: { class: 'crater-single-webpart', 'data-webpart': name }, children: [
-					this.elementModifier.createElement({//set the icon
+					kerdx.createElement({//set the icon
 						element: 'i', attributes: { class: 'image', 'data-icon': this.icons[name] }
 					}),
-					this.elementModifier.createElement({
+					kerdx.createElement({
 						element: 'a', attributes: { class: 'title' }, text: single//set the text
 					})
 				]
@@ -364,18 +388,17 @@ export class App {
 	}
 
 	inEditMode() {
-		let editing = this.displayMode == DisplayMode.Edit;
-		if (!editing) {
-			this.app.findAll('.webpart-option').forEach(option => {
-				option.show();
-			});
-		}
-		return editing;
+		// let editing = this.displayMode == DisplayMode.Edit;
+		// if (!editing) {
+		// 	this.app.findAll('.webpart-option').forEach(option => {
+		// 		option.show();
+		// 	});
+		// }
+		return true;
 	}
 
 	get isLocal() {
-		let local = Environment.type == EnvironmentType.Local;
-		return local;
+		return location.hostname == 'localhost';
 	}
 
 	addWebpart(element) {
@@ -468,7 +491,7 @@ export class App {
 			Object.keys(clone).map(key => {
 				this.attributes[key] = clone[key];
 			});
-			this.domContent = this.elementModifier.createElement(this.attributes.dom.content);
+			this.domContent = kerdx.createElement(this.attributes.dom.content);
 			this.app.innerHTML = '';
 			this.app.appendChild(this.domContent);
 			this.runAll();
@@ -568,12 +591,12 @@ export class App {
 		let cell = element.getParents('.cell');
 		let cellData = cell.find('.cell-data');
 
-		let content = this.elementModifier.createElement({
+		let content = kerdx.createElement({
 			element: 'div', attributes: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignContent: 'center', background: 'white' } }
 		});
 
-		let textEditor = this.elementModifier.textEditor({ content: cellData.cloneNode(true), width: '90%' });
-		let done = this.elementModifier.createElement({
+		let textEditor = kerdx.textEditor({ content: cellData.cloneNode(true), width: '90%' });
+		let done = kerdx.createElement({
 			element: 'div', children: [
 				{ element: 'button', attributes: { class: 'btn' }, text: 'Done' }
 			]
@@ -581,8 +604,7 @@ export class App {
 
 		content.append(textEditor, done);
 
-		let popUp = this.elementModifier.popUp({ close: this.images.close, maximize: this.images.maximize, minimize: this.images.minimize, content });
-		cell.append(popUp);
+		let popUp = kerdx.popUp(content, { attributes: { style: { width: '100%', height: '100%' } } });
 
 		let editor;
 		textEditor.onAdded(() => {
@@ -599,153 +621,40 @@ export class App {
 		let cell = element.getParents('.cell');
 		let cellData = cell.find('.cell-data');
 
-		let content = this.elementModifier.createElement({
-			element: 'div', attributes: { style: { display: 'flex', flexDirection: 'column', background: 'white' } }
-		});
-
-		let menuContent = [
-			{ name: 'Icon', owner: 'Icon' },
-			{ name: 'Upload', owner: 'Upload' },
-		];
-
-		let menu = this.elementModifier.menu({
-			content: menuContent,
-			padding: '1em 0em'
-		});
-
-		let uploadImage = this.elementModifier.createForm({
-			title: 'Upload using link', attributes: { id: 'upload-image-form', class: 'form', style: { display: 'none' } },
-			contents: {
-				image: { element: 'input', attributes: { id: 'image-to-upload', name: 'Link', type: 'Link' } },
-			},
-			buttons: {
-				submit: { element: 'button', attributes: { id: 'upload', class: 'btn' }, text: 'Upload' },
-			}
-		});
-
 		let storedIcons = [];
 		for (let name in this.icons) {
 			storedIcons.push({
-				icon: this.elementModifier.createElement({ element: 'i', attributes: { 'data-icon': this.icons[name], style: { width: '1.5em', height: '1.5em' } } }).outerHTML,
-				name,
+				icon: kerdx.createElement({ element: 'i', attributes: { 'data-icon': this.icons[name] } }).outerHTML,
+				name: name.toUpperCase(),
+				value: this.icons[name]
 			});
 		}
-		let selectIcon = this.elementModifier.createElement({
-			element: 'div', attributes: {}, children: [
-				this.elementModifier.createTable({ contents: storedIcons, rowClass: 'single-icon', search: true, title: 'Select Icon' }),
-				{
-					element: 'button', attributes: { style: { margin: '1em' }, class: 'btn', id: 'select-icon' }, text: 'Select'
-				}]
-		});
 
-		this.elementModifier.listenTable({ table: selectIcon.find('.table-container') });
-		selectIcon.find('.table').classList.add('scrollable-table');
-		selectIcon.find('tbody').css({ maxHeight: '40vh', overflow: 'auto', display: 'block' });
+		let selectIconTable = kerdx.createTable({ contents: storedIcons, rowClass: 'single-icon', search: true, title: 'Select Icon', projection: { value: -1 } });
 
-		let selectedIcon;
+		let popUp = kerdx.popUp(selectIconTable, { attributes: { style: { width: '100%', height: '100%', overflow: 'hidden', justifyContent: 'center' } } });
 
-		let uploadImageView = this.elementModifier.createElement({
-			element: 'div', attributes: { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } }, children: [
-				menu,
-				{
-					element: 'div', attributes: { style: { width: '80%' } }, children: [
-						uploadImage, selectIcon
-					]
-				}
-			]
-		});
+		kerdx.listenTable({ options: ['edit'], table: selectIconTable }, {
+			click: event => {
+				let target = event.target;
+				let { row } = target.getParents('.kerdx-table-column-cell').dataset;
+				let table = target.getParents('.kerdx-table');
+				let value = table.find(`.kerdx-table-column[data-name="value"]`).find(`.kerdx-table-column-cell[data-row="${row}"]`).dataset.value;
 
-		content.append(uploadImageView);
-		let currentWindow = 'Icon';
-
-		menu.addEventListener('click', event => {
-			let item = event.target;
-
-			if (!item.classList.contains('crater-menu-item')) item = item.getParents('.crater-menu-item');
-
-			if (this.func.isnull(item)) return;
-
-			if (item.dataset.owner == 'Upload' && currentWindow != 'Upload') {
-				selectIcon.css({ display: 'none' });
-				uploadImage.cssRemove(['display']);
-			}
-			else if (item.dataset.owner == 'Icon' && currentWindow != 'Icon') {
-				selectIcon.cssRemove(['display']);
-				uploadImage.css({ display: 'none' });
-			}
-
-			currentWindow = item.dataset.owner;
-
-			menu.findAll('.crater-menu-item').forEach(mItem => {
-				mItem.cssRemove(['background-color']);
-			});
-
-			item.css({ backgroundColor: `var(--lighter-primary-color)` });
-		});
-
-		let popUp = this.elementModifier.popUp({ close: this.images.close, maximize: this.images.maximize, minimize: this.images.minimize, content });
-		cell.append(popUp);
-
-		let allSingleIcons = selectIcon.findAll('.single-icon');
-		selectIcon.addEventListener('click', event => {
-			let target = event.target;
-			if (target.id == 'select-icon') {
-				if (this.func.isset(selectedIcon)) {
-					cellData.removeClasses(cellData.dataset.icon);
-					cellData.addClasses(selectedIcon);
-					cellData.dataset.icon = selectedIcon;
-					popUp.remove();
-				}
-				else alert('Please Select an Icon');
-			}
-			else {
-				if (!target.classList.contains('single-icon')) {
-					target = target.getParents('.single-icon');
-
-					if (!this.func.isnull(target) && target.classList.contains('single-icon')) {
-						for (let i = 0; i < allSingleIcons.length; i++) {
-							allSingleIcons[i].cssRemove(['background', 'color']);
-						}
-						target.css({ background: 'green', color: 'white' });
-						selectedIcon = target.find('i').dataset.icon;
-					}
-				}
-			}
-		});
-
-		selectIcon.ondblclick = event => {
-			let target = event.target;
-			if (!target.classList.contains('single-icon')) target = target.getParents('.single-icon');
-
-			if (!this.func.isnull(target) && target.classList.contains('single-icon')) {
-				selectedIcon = target.find('i').dataset.icon;
-				selectIcon.find('#select-icon').click();
-			}
-		};
-
-		uploadImage.addEventListener('submit', event => {
-			event.preventDefault();
-			uploadImage.find('.form-error').textContent = '';
-			uploadImage.find('.form-error').cssRemove(['display']);
-
-			if (!this.elementModifier.validateForm(uploadImage)) {
-				uploadImage.find('.form-error').textContent = 'Form not filled correctly';
-				uploadImage.find('.form-error').css({ display: 'unset' });
-				return;
-			}
-
-			this.elementModifier.imageToJson(uploadImage.find('#image-to-upload').files[0], (file) => {
-				cellData.src = file.src;
+				cellData.removeClasses(cellData.dataset.icon);
+				cellData.addClasses(value);
+				cellData.dataset.icon = value;
 				popUp.remove();
-			});
+			},
 		});
+
 	}
 
 	uploadImage(element) {
 		let cell = element.getParents('.cell');
 		let cellData = cell.find('.cell-data');
 
-		let content = this.elementModifier.createElement({
+		let content = kerdx.createElement({
 			element: 'div', attributes: { style: { display: 'flex', flexDirection: 'column', background: 'white' } }
 		});
 
@@ -755,12 +664,12 @@ export class App {
 			{ name: 'Link', owner: 'Link' },
 		];
 
-		let menu = this.elementModifier.menu({
+		let menu = craterApp.craterWebparts.menu({
 			content: menuContent,
 			padding: '1em 0em'
 		});
 
-		let uploadDriveImage = this.elementModifier.createForm({
+		let uploadDriveImage = kerdx.createForm({
 			title: 'Upload From Local Drive', attributes: { id: 'upload-drive-image-form', class: 'form', style: { display: 'none' } },
 			contents: {
 				image: { element: 'input', attributes: { id: 'image-to-upload', name: 'Link', type: 'file' } },
@@ -770,7 +679,7 @@ export class App {
 			}
 		});
 
-		let uploadLinkImage = this.elementModifier.createForm({
+		let uploadLinkImage = kerdx.createForm({
 			title: 'Upload With Url', attributes: { id: 'upload-link-image-form', class: 'form', style: { display: 'none' } },
 			contents: {
 				link: { element: 'input', attributes: { id: 'image-link', name: 'Link', type: 'text' } },
@@ -785,15 +694,15 @@ export class App {
 			let link = this.images[name].slice(0, 20) + '...';
 
 			storedImages.push({
-				image: this.elementModifier.createElement({ element: 'img', attributes: { src: this.images[name], style: { width: '1.5em', height: '1.5em' } } }).outerHTML,
+				image: kerdx.createElement({ element: 'img', attributes: { src: this.images[name], style: { width: '1.5em', height: '1.5em' } } }).outerHTML,
 				name,
 				link
 			});
 		}
-		let selectImage = this.elementModifier.createElement({
+		let selectImage = kerdx.createElement({
 			element: 'div', attributes: { class: 'table-container' }, children: [
 				{ element: 'h2', attributes: { class: 'form-title' }, html: 'Select Image from Crater' },
-				this.elementModifier.createTable({ contents: storedImages, rowClass: 'single-image' }),
+				kerdx.createTable({ contents: storedImages, rowClass: 'single-image' }),
 				{
 					element: 'button', attributes: { style: { margin: '1em' }, class: 'btn', id: 'select-image' }, text: 'Select'
 				}]
@@ -803,7 +712,7 @@ export class App {
 
 		let selectedImage;
 
-		let uploadImageView = this.elementModifier.createElement({
+		let uploadImageView = kerdx.createElement({
 			element: 'div', attributes: { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } }, children: [
 				menu,
 				{
@@ -822,7 +731,7 @@ export class App {
 
 			if (!item.classList.contains('crater-menu-item')) item = item.getParents('.crater-menu-item');
 
-			if (this.func.isnull(item)) return;
+			if (kerdx.isnull(item)) return;
 
 			if (item.dataset.owner == 'Select' && currentWindow != 'Select') {
 				uploadLinkImage.css({ display: 'none' });
@@ -849,14 +758,13 @@ export class App {
 			item.css({ backgroundColor: `var(--lighter-primary-color)` });
 		});
 
-		let popUp = this.elementModifier.popUp({ close: this.images.close, maximize: this.images.maximize, minimize: this.images.minimize, content });
-		cell.append(popUp);
+		let popUp = kerdx.popUp(content, { attributes: { style: { width: '100%', height: '100%' } } });
 
 		let allSingleImages = selectImage.findAll('.single-image');
 		selectImage.addEventListener('click', event => {
 			let target = event.target;
 			if (target.id == 'select-image') {
-				if (this.func.isset(selectedImage)) {
+				if (kerdx.isset(selectedImage)) {
 					cellData.src = selectedImage;
 					popUp.remove();
 				}
@@ -866,7 +774,7 @@ export class App {
 				if (!target.classList.contains('single-image')) {
 					target = target.getParents('.single-image');
 
-					if (!this.func.isnull(target) && target.classList.contains('single-image')) {
+					if (!kerdx.isnull(target) && target.classList.contains('single-image')) {
 						for (let i = 0; i < allSingleImages.length; i++) {
 							allSingleImages[i].cssRemove(['background', 'color']);
 						}
@@ -881,7 +789,7 @@ export class App {
 			let target = event.target;
 			if (!target.classList.contains('single-image')) target = target.getParents('.single-image');
 
-			if (!this.func.isnull(target) && target.classList.contains('single-image')) {
+			if (!kerdx.isnull(target) && target.classList.contains('single-image')) {
 				cellData.src = target.find('img').src;
 				popUp.remove();
 			}
@@ -892,13 +800,13 @@ export class App {
 			uploadDriveImage.find('.form-error').textContent = '';
 			uploadDriveImage.find('.form-error').cssRemove(['display']);
 
-			if (!this.elementModifier.validateForm(uploadDriveImage)) {
+			if (!kerdx.validateForm(uploadDriveImage)) {
 				uploadDriveImage.find('.form-error').textContent = 'Form not filled correctly';
 				uploadDriveImage.find('.form-error').css({ display: 'unset' });
 				return;
 			}
 
-			this.elementModifier.imageToJson(uploadDriveImage.find('#image-to-upload').files[0], (file) => {
+			kerdx.imageToJson(uploadDriveImage.find('#image-to-upload').files[0], (file) => {
 				cellData.src = file.src;
 				popUp.remove();
 			});
@@ -909,7 +817,7 @@ export class App {
 			uploadLinkImage.find('.form-error').textContent = '';
 			uploadLinkImage.find('.form-error').cssRemove(['display']);
 
-			if (!this.elementModifier.validateForm(uploadLinkImage)) {
+			if (!kerdx.validateForm(uploadLinkImage)) {
 				uploadLinkImage.find('.form-error').textContent = 'Form not filled correctly';
 				uploadLinkImage.find('.form-error').css({ display: 'unset' });
 				return;
@@ -939,14 +847,14 @@ export class App {
 	}
 
 	restoreHeight() {
-		if (this.func.isnull(this.app.find('crater-display-panel')) && this.func.isnull(this.app.find('crater-edit-window')) && this.func.isnull(this.app.find('crater-pop-up'))) {
+		if (kerdx.isnull(this.app.find('crater-display-panel')) && kerdx.isnull(this.app.find('crater-edit-window')) && kerdx.isnull(this.app.find('crater-pop-up'))) {
 			this.app.cssRemove(['min-height']);
 		}
 	}
 
 	saveSettings(element, settings, settingsClone) {
-		if (this.func.isset(settingsClone)) {
-			this.func.objectCopy(settingsClone, settings);
+		if (kerdx.isset(settingsClone)) {
+			kerdx.object.copy(settingsClone, settings);
 		}
 		element.dataset.settings = JSON.stringify(settings);
 	}
@@ -978,7 +886,7 @@ export class App {
 			for (let j = 0; j < cells.length; j++) {
 				cell = this.prototypes[type].pane.find(`.${cardClasses} #${cells[j].id}`);
 
-				if (this.func.isnull(cell)) {
+				if (kerdx.isnull(cell)) {
 					continue;
 				}
 
@@ -1002,19 +910,19 @@ export class App {
 		let concat = (old, fresh) => {
 			for (let name in fresh) {
 				if (fresh[name] instanceof Element) {
-					if (!this.func.isset(old[name])) {
+					if (!kerdx.isset(old[name])) {
 						old[name] = fresh[name];
 					}
 				}
 				else if (typeof fresh[name] == 'object') {
-					if (!this.func.isset(old[name])) {
+					if (!kerdx.isset(old[name])) {
 						old[name] = fresh[name];
 					}
 					else {
 						concat(old[name], fresh[name]);
 					}
 				}
-				else if (!this.func.isset(old[name])) {
+				else if (!kerdx.isset(old[name])) {
 					old[name] = fresh[name];
 				}
 			}
@@ -1049,7 +957,7 @@ export class App {
 				}
 
 				twin = pr.find(identifier);
-				if (this.func.isnull(twin)) {
+				if (kerdx.isnull(twin)) {
 					continue;
 				}
 

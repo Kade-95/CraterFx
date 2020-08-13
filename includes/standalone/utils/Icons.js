@@ -1,4 +1,4 @@
-let Icons: any = {};
+let Icons = {};
 Icons['accordion'] = 'fas, fa-stream';
 Icons['address-book'] = 'fas, fa-address-book';
 Icons['amazon'] = 'fas, fa-amazon';
