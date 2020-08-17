@@ -21,31 +21,19 @@ export class CraterApp {
 		this.pasteElement;
 		this.stored = {};
 		this.minHeight = '500px';
+		this.appType = 'StandAlone';
+
 		this.connectable = [
 			'list', 'slider', 'counter', 'tiles', 'news', 'table', 'buttons', 'events', 'carousel', 'datelist', 'event', 'accordion', 'newscarousel', 'threedimensionalslider'
 		];
+
 		this.containers = [
 			'section', 'tab', 'panel', 'crater', 'row'
 		];
+
 		this.webparts = [
 			'Panel', 'List', 'Slider', 'Counter', 'Tiles', 'News', 'Table', 'TextArea', 'Icons', 'Buttons', 'Count Down', 'Tab', 'Events', 'Carousel', 'Map', 'Date List', 'Instagram', 'Facebook', 'Youtube', 'Twitter', 'Before After', 'Event', 'PowerBI', 'Employee Directory', 'Birthday', 'Calendar', 'Frame', 'Accordion', 'News Carousel', 'Three Dimensional Slider', 'Background', 'Row', 'Image', 'Image Caption'
 		];
-
-		this.properties = {
-			page: location.origin + location.pathname,
-			dom: {
-				generated: false,
-				content: ""
-			},
-			pane: {
-				generated: false,
-				content: {}
-			},
-			states: {
-				currentPosition: 0,
-				data: []
-			}
-		};
 
 		this.attributes = {
 			page: location.origin + location.pathname,
@@ -63,8 +51,23 @@ export class CraterApp {
 			}
 		};
 
-		this.prototypes = {};
+		this.features = {
+		}
 
+		if (this.appType == 'StandAlone') {
+			localStorage.craterApp = localStorage.craterApp || JSON.stringify({ mode: 'Edit' });
+		}
+
+		this.props = JSON.parse(localStorage.craterApp);
+		this.monitorDetails;
+		this.details = kerdx.object.onChanged(this.props, () => {
+			this.monitorDetails = setTimeout(() => {
+				localStorage.craterApp = JSON.stringify(this.details);
+				clearTimeout(this.monitorDetails);
+			}, 1000);
+		});
+
+		this.prototypes = {};
 		this.images = Images;
 		this.icons = Icons;
 
@@ -74,11 +77,12 @@ export class CraterApp {
 	render(params = {}) {
 		this.domElement = params.container || document;
 		this.craterWebparts.loadCss(this.domElement.head);
-
 		this.connection.context = this.context;
 		if (!this.renderedOnce) {
-			this.attributes['_id'] = this.properties.id;
-			if (this.properties['deleted'] == true) {
+			this.features._id = this.details._id;
+			this.features.user = params.user;
+			
+			if (this.details['deleted'] == true) {
 				this.domElement.body.textContent = 'Crater Deleted';
 				return;
 			}
@@ -186,34 +190,19 @@ export class CraterApp {
 			};
 
 			this.domElement.body.appendChild(this.app);
-			if (!this.isLocal) {
-				this.connection.fetchApp(this.properties.id)
-					.then(result => {
-						if (!kerdx.isnull(result)) {
-							this.attributes = result;
-						}
-						else {
-							kerdx.objectCopy(this.properties, this.attributes);
-						}
-
-						display();
-					})
-					.catch((err) => {
-						alert(`Crater Error (${err})`);
-						display();
-					});
-			}
-			else {
-				this.attributes = this.properties;
+			this.connection.getCrater().then(result => {
+				if (kerdx.isset(result)) {
+					this.attributes = result;
+				}
 				display();
-			}
+			}).catch((err) => {
+				alert(`Crater Error (${err})`);
+				display();
+			});
 
 			this.app.addEventListener('mutated', event => {
 				//check for changes
-				if (this.dontSave) {
-					this.dontSave = false;
-				}
-				else if (!this.changingState) {
+				if (!this.changingState) {
 					this.attributes.dom.content = this.app.innerHTML;
 					if (this.saved || this.editted) {
 						this.saveCrater();
@@ -290,6 +279,8 @@ export class CraterApp {
 		this.app.findAll('.webpart-options').forEach(element => {
 			element.css({ display: 'none' });
 		});
+
+		this.switchMode()
 	}
 
 	appendWebpart(parent, webpart) {
@@ -388,13 +379,12 @@ export class CraterApp {
 	}
 
 	inEditMode() {
-		// let editing = this.displayMode == DisplayMode.Edit;
-		// if (!editing) {
-		// 	this.app.findAll('.webpart-option').forEach(option => {
-		// 		option.show();
-		// 	});
+		let mode = this.details.mode == 'Edit';
+		// if (kerdx.isset(DisplayMode)) {
+		// 	mode = this.displayMode == DisplayMode.Edit;
+		// 	this.switchMode(mode ? 'Edit' : 'Preview');
 		// }
-		return true;
+		return mode;
 	}
 
 	get isLocal() {
@@ -429,8 +419,10 @@ export class CraterApp {
 			let key = element.getParents('data-key').dataset.key;
 			if (element.getParents('data-key').outerHTML == this.domContent.outerHTML) {
 				//if element is the base webpart
-				this.domContent.getParents('.ControlZone').remove();
-				this.attributes.dom.content = 'Webpart Deleted';
+				this.connection.deleteLocalApp(this.attributes._id).then(deleted => {
+					this.domContent.getParents('.ControlZone').remove();
+					this.attributes.dom.content = 'Webpart Deleted';
+				});
 			}
 			else if (element.getParents('data-key').classList.contains('crater-section')) {
 				//if element is a section
@@ -563,13 +555,27 @@ export class CraterApp {
 		this.saved = false;
 		this.editted = false;
 
-		if (!this.isLocal) {
-			this.connection.putApp(this.attributes).then(result => {
-				this.properties.id = result;
-				this.attributes.id = result;
-				console.log('Crater Uploaded');
-			});
+		this.features.lastModified = new Date().getTime();
+		this.connection.putDraft().then(result => {
+			this.details._id = result;
+			this.features._id = result;
+			console.log('Crater Uploaded');
+		});
+	}
+
+	republish() {
+		let work;
+		this.features.lastModified = new Date().getTime();
+		if (this.isLocal) {
+			work = this.connection.putLocal();
 		}
+		else {
+			work = this.connection.putCloud();
+		}
+
+		work.then(done => {
+			console.log(done);
+		});
 	}
 
 	setCorrection() {
@@ -966,5 +972,22 @@ export class CraterApp {
 		};
 
 		concatUI(element, this.prototypes[type]);
+	}
+
+	switchMode(mode) {
+		if (kerdx.isset(mode)) {
+			this.details.mode = mode;
+		}
+
+		if (this.details.mode == 'Edit') {
+			this.app.findAll('.webpart-option').forEach(option => {
+				option.cssRemove(['display']);
+			});
+		}
+		else if (this.details.mode == 'preview') {
+			this.app.findAll('.webpart-option').forEach(option => {
+				option.css({ display: 'none' });
+			});
+		}
 	}
 }

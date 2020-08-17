@@ -23,25 +23,162 @@ class Connection {
         return site;
     }
 
-    getLocalApp(_id){
-        
+    getCrater() {
+        let draft = this.fetchDraft();
+        let saved;
+        if (craterApp.isLocal) {
+            saved = this.fetchLocal();
+        }
+        else {
+            saved = this.fetchCloud();
+        }
+
+        return new Promise((resolve, reject) => {
+            kerdx.runParallel({ draft, saved }, fetched => {
+                if (!kerdx.isset(fetched.saved)) {
+                    if (kerdx.isset(fetched.draft)) {
+                        resolve(fetched.draft.attributes);
+                    }
+                    else {
+                        resolve(fetched.draft);
+                    }
+                }
+                else if (!kerdx.isset(fetched.draft)) {
+                    if (kerdx.isset(fetched.saved)) {
+                        resolve(fetched.saved.attributes);
+                    }
+                    else {
+                        resolve(fetched.saved);
+                    }
+                }
+                else {
+                    if (Math.floor(fetched.draft.lastModified) > Math.floor(fetched.saved.lastModified)) {
+                        resolve(fetched.draft.attributes);
+                    }
+                    else {
+                        resolve(fetched.saved.attributes);
+                    }
+                }
+            });
+        });
+    }
+
+    putDraft() {
+        let query = JSON.parse(JSON.stringify(craterApp.features));
+        query.attributes = JSON.stringify(craterApp.attributes);
+        let check = {};
+        if (kerdx.isset(query._id)) {
+            check = { _id: query._id, user: query.user };
+        }
+        return db.save({ collection: 'craterdraft', query, check }).then(saved => {
+            if (saved.action == 'insert') {
+                return saved.documents._id;
+            }
+            else {
+                return query._id;
+            }
+        }).catch(error => {
+            console.log(`Error saving app =>${error}`);
+        });
+    }
+
+    fetchDraft() {
+        let query = { _id: craterApp.features._id, user: craterApp.features.user };
+        return db.find({ collection: 'craterdraft', query }).then(found => {
+            if (kerdx.isset(found)) {
+                found.attributes = JSON.parse(found.attributes);
+            }
+            return found;
+        });
+    }
+
+    deleteDraft() {
+        let query = {};
+        if (kerdx.isset(craterApp.features._id)) {
+            query._id = craterApp.features._id;
+            query.user = craterApp.features.user;
+        }
+        return db.delete({ collection: 'craterdraft', query }).then(done => {
+            return done.ok;
+        });
+    }
+
+    fetchLocal() {
+        let query = { _id: craterApp.features._id };
+        return db.find({ collection: 'craterapp', query }).then(found => {
+            if (kerdx.isset(found)) {
+                found.attributes = JSON.parse(found.attributes);
+            }
+            return found;
+        });
+    }
+
+    putLocal() {
+        let query = JSON.parse(JSON.stringify(craterApp.features));
+        query.attributes = JSON.stringify(craterApp.attributes);
+        delete query.user;
+        let check = {};
+        if (kerdx.isset(query._id)) {
+            check = { _id: query._id };
+        }
+
+        return db.save({ collection: 'craterapp', query, check }).then(saved => {
+            if (saved.action == 'insert') {
+                return saved.documents._id;
+            }
+            else {
+                return query._id;
+            }
+        }).catch(error => {
+            console.log(`Error saving app =>${error}`);
+        });
+    }
+
+    deleteLocal() {
+        let query = {};
+        if (kerdx.isset(craterApp.features._id)) {
+            query._id = craterApp.features._id;
+        }
+        return db.delete({ collection: 'craterapp', query }).then(done => {
+            return done.ok;
+        });
+    }
+
+    fetchCloud() {
+        let page = location.origin + location.pathname;
+        let data = { action: 'fetchCloudApp', _id, page };
+        return this.connect({ data, url: 'https://crater365.net' });
+    }
+
+    putCloud() {
+        attributes = JSON.stringify(attributes);
+        let data = { action: 'putCloudApp', attributes };
+        return this.connect({ url: 'https://crater365.net', data });
+    }
+
+    deleteCloud() {
+        let data = { action: 'deleteCloudApp', _id };
+        return this.connect({ url: 'https://crater365.net', data });
     }
 
     fetchApp(_id) {
         let page = location.origin + location.pathname;
         let data = { action: 'fetchApp', _id, page };
-        return this.connect({ data, url: 'https://api.crater365.net' });
+        return this.connect({ data, url: 'https://crater365.net' });
     }
 
     putApp(attributes) {
-        attributes = JSON.stringify(attributes);
-        let data = { action: 'putApp', attributes };
-        return this.connect({ url: 'https://api.crater365.net', data });
+        if (craterApp.isLocal) {
+            return this.putLocalApp(attributes);
+        }
+        else {
+            return this.putCloudApp(attributes);
+        }
     }
 
     deleteApp(_id) {
         let data = { action: 'deleteApp', _id };
-        return this.connect({ url: 'https://api.crater365.net', data });
+        return this.connect({ url: 'https://crater365.net', data });
     }
 
     getRSSFeed(url, count, keywords) {

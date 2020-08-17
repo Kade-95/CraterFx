@@ -20,7 +20,14 @@ let metadata = {
     }
 };
 
-global.kerds = new Kerds({ server: { address: "mongodb://localhost:27017/", name: 'craterapi' }, index: 'index.html' });
+global.kerds = new Kerds({ server: { address: "mongodb://localhost:27017/", name: 'craterapi' }});
+kerds.appPages = [
+    'index.html',
+    'dashboard.html',
+    'apps.html',
+    'users.html'
+];
+
 global.db = new Database({ address: "mongodb://localhost:27017/", name: 'craterapi' });
 global.bcrypt = require('bcrypt');
 global.ObjectId = require('mongodb').ObjectId;
@@ -32,23 +39,46 @@ let { View } = require('./includes/classes/View');
 let postHandler = new PostHandler();
 let extra = new Extra();
 let view = new View(metadata, 'webapp');
+global.sessions = kerds.sessionsManager.sessions;
 
-let {port, protocol} = kerds.getCommands('-');
+function setup() {
+    return new Promise((resolve, rejects) => {
+        resolve(true);
+    });
+}
 
-kerds.createServer(port || 8082,
-    params => {
-        view.createView(params);
-    }, protocol || 'https',
-    { origins: ['*'] },
-    {
-        key: fs.readFileSync('./permissions/server.key'),
-        cert: fs.readFileSync('./permissions/server.crt')
+function setDb(session) {
+    if (!kerds.isset(global.sessions[session].db)) {
+        global.sessions[session].db = new Database({ address: "mongodb://localhost:27017/", name: 'craterapi' });
     }
-);
+    if (kerds.isset(global.sessions[session].tenant)) {
+        global.sessions[session].db.setName(global.sessions[session].tenant);
+    }
+}
 
-kerds.recordSession(24 * 60 * 60 * 1000);
+let { port, protocol } = kerds.getCommands('-');
+
+setup().then(done=>{
+    kerds.createServer(
+        port || 8082,
+        params => {
+            setDb(params.sessionId);
+            console.log(global.sessions[params.sessionId].db.name);
+            view.createView(params);
+        }, protocol || 'https',
+        { origins: ['*'] },
+        {
+            key: fs.readFileSync('./permissions/server.key'),
+            cert: fs.readFileSync('./permissions/server.crt')
+        }
+    );
+});
+
+kerds.recordSession(24 * 60 * 60 * 1000, ['tenant', 'user']);
 kerds.handleRequests = (req, res, form) => {
+    setDb(req.sessionId);
     postHandler.act(req, res, form);
 }
 
 extra.clearEmptyApps();
+extra.automateBackup();

@@ -1,6 +1,3 @@
-import { Kerdx } from 'https://kade-95.github.io/kerdx/index.js';
-window.kerdx = new Kerdx();
-
 import { accordion } from '../webparts/Accordion.js';
 // import { Background } from '../webparts/Background.js';
 // import { BeforeAfter } from '../webparts/BeforeAfter.js';

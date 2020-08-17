@@ -99,6 +99,7 @@ class CraterUi {
                                     element: 'span', attributes: { id: 'main-container-header-nav' }, children: [
                                         { element: 'i', attributes: { class: 'icon fas fa-angle-double-right', id: 'open-side-bar' } },
                                         { element: 'i', attributes: { class: 'icon fas fa-redo', id: 'reload-page' } },
+                                        { element: 'i', attributes: { class: 'icon fas fa-screwdriver', id: 'display-crater' } },
                                         { element: 'h5', attributes: { id: 'current-page-name' }, text: location.pathname.slice(1, location.pathname.indexOf('.html')) },
                                     ]
                                 },
@@ -151,6 +152,9 @@ class CraterUi {
 
             if (event.target.id == 'reload-page') {
                 this.route();
+            }
+            if (event.target.id == 'display-crater') {
+                system.displayCrater();
             }
         });
     }

@@ -8,7 +8,7 @@ const craterUi = new CraterUi();
 let viewSet = false;
 window.log = console.log;
 
-function setupView() {
+system.setupView = () => {
     let view = {};
     view.primaryColor = 'rgb(255, 255, 255)';
     view.secondaryColor = 'rgb(0, 0, 0)';
@@ -18,10 +18,10 @@ function setupView() {
     viewSet = true;
 }
 
-function route() {
+system.route = () => {
     document.body.removeChildren({ except: ['#main-notifications', '#open-notifications'] });
     if (!viewSet) {
-        setupView();
+        system.setupView();
     }
 
     document.body.makeElement({
@@ -42,13 +42,13 @@ function route() {
             system.redirect('index.html');
         }
         else {
-            display();
+            system.display();
         }
 
     }
     else if (pathname == '/' || pathname == '/index.html') {
         if (system.user == 'undefined') {
-            display();
+            system.display();
         }
         else {
             system.redirect('dashboard.html');
@@ -61,14 +61,14 @@ function route() {
         craterUi.init();
     }
 
-    toggleNotifications();
+    system.toggleNotifications();
 }
 
-function display() {
+system.display = () => {
     let header = document.body.find('#main-header');
     document.body.cssRemove(['grid-template-rows']);
     header.cssRemove(['display']);
-    setupView();
+    system.setupView();
     header.makeElement([
         {
             element: 'a', attributes: { id: 'site-details', href: 'index.html' }, children: [
@@ -110,7 +110,7 @@ function display() {
 
     header.addEventListener('click', event => {
         if (event.target.classList.contains('get-started')) {
-            login(document.body.find('#main-window-container'));
+            system.login(document.body.find('#main-window-container'));
         }
     });
 
@@ -123,7 +123,7 @@ function display() {
                         element: 'div', attributes: { class: 'descriptive-link' }, children: [
                             { element: 'h5', attributes: { class: 'descriptive-link-title' }, html: 'Crater API' },
                             { element: 'p', attributes: { class: 'descriptive-link-text' }, text: '' },
-                            { element: 'a', attributes: { class: 'btn btn-big', href: 'index.html?page=displayCrater' }, text: 'Creater' }
+                            { element: 'a', attributes: { class: 'btn btn-big', href: 'index.html?page=createTenant' }, text: 'Create Tenant' }
                         ]
                     },
                 ]
@@ -135,14 +135,17 @@ function display() {
     });
 
     if (url.vars.page == 'login') {
-        login(main.find('#main-window-container'));
+        system.login(main.find('#main-window-container'));
+    }
+    else if (url.vars.page == 'createTenant') {
+        system.createTenant(main.find('#main-window-container'));
     }
     else if (url.vars.page == 'displayCrater') {
         system.displayCrater();
     }
 }
 
-function login(container) {
+system.login = (container) => {
     let loading = kerdx.createElement({ element: 'span', attributes: { class: 'loading loading-medium' } });
 
     let loginForm = kerdx.createForm({
@@ -187,7 +190,7 @@ function login(container) {
             else {
                 system.user = result.user;
                 system.userType = result.userType;
-                setupView();
+                system.setupView();
                 system.redirect(craterUi.currentPage);
                 note = 'Welcome back!!! ' + data.email;
             }
@@ -197,7 +200,55 @@ function login(container) {
     });
 }
 
-function toggleNotifications() {
+system.createTenant = (container) => {
+    let tenantForm = kerdx.createForm({
+        title: 'Tenant Form', attributes: { id: 'tenant-form', class: 'form' },
+        contents: {
+            tenant: { element: 'input', attributes: { id: 'tenant', name: 'tenant' } },
+            admin: { element: 'input', attributes: { id: 'admin', name: 'admin' } },
+            password: {
+                element: 'input', attributes: { id: 'password', name: 'password', type: 'password', autoComplete: true }
+            }
+        },
+        buttons: {
+            submit: { element: 'button', attributes: { id: 'submit' }, text: 'Create' },
+        }
+    });
+
+    container.render(tenantForm);
+
+    tenantForm.addEventListener('submit', event => {
+        event.preventDefault();
+
+        let formValidation = kerdx.validateForm(tenantForm, { nodeNames: ['INPUT'] });
+
+        if (!formValidation.flag) {
+            tenantForm.setState({ name: 'error', attributes: { style: { display: 'unset' } }, text: `Form ${formValidation.elementName} is faulty` });
+            return;
+        }
+
+        let data = kerdx.jsonForm(tenantForm);
+        data.action = 'createTenant';
+
+        system.connect({ data }).then(result => {
+            let note;
+            if (result == 'found') {
+                note = 'Tenant with name already Exists';
+            }
+            else {
+                document.body.dataset.user = result.user;
+                document.body.dataset.userType = result.userType;
+                system.setupView(result.user);
+                system.redirect('dashboard.html');
+                note = 'Welcome' + data.admin;
+            }
+
+            system.notify({ note });
+        });
+    });
+}
+
+system.toggleNotifications = () => {
     let openNotifications = document.body.find('#open-notifications');
     let closeNotifications = document.body.find('#close-notifications');
     let notificationsBlock = closeNotifications.parentNode;
@@ -216,19 +267,15 @@ system.realSmallScreen = window.matchMedia("(min-width: 500px)");
 
 system.displayCrater = () => {
     let craterWindow = kerdx.createElement({
-        element: 'iframe', attributes: {id: 'crater-window', style: {height: '100%', width: '100%'}}
+        element: 'iframe', attributes: { id: 'crater-window', style: { height: '100%', width: '100%' } }
     });
-    craterWindow.src = 'includes/standalone/index.html';
-
-    let popUpCrater = kerdx.popUp(craterWindow, {attributes: {style: {width: '100%', height: '100%'}}});
-
-    craterWindow.contentDocument.head.innerHTML = ''
-
+    craterWindow.src = `includes/standalone/index.html?user=${system.user}`;
+    let popUpCrater = kerdx.popUp(craterWindow, { attributes: { style: { width: '100%', height: '100%' } } });
 }
 
 system.redirect = url => {
     window.history.pushState('page', 'title', kerdx.api.prepareUrl(url));
-    route();
+    system.route();
 }
 
 system.reload = () => {
@@ -380,11 +427,11 @@ document.addEventListener('DOMContentLoaded', event => {
 
     document.body.makeElement({ element: 'i', attributes: { class: 'icon fas fa-angle-double-right', id: 'open-notifications' } },
     );
-    route();
+    system.route();
 
     if (true) {
         kerdx.api.makeWebapp(event => {
-            route();
+            system.route();
         });
     }
 });

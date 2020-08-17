@@ -9,6 +9,7 @@
     display: grid;
     padding: 2em;
     grid-gap: 4em;
+    overflow: auto;
 }
 
 #main-window-container {
