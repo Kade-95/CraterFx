@@ -123,7 +123,7 @@ class Extra {
                     if (name == 'tenants') {
                         let runTenants = {};
                         for (let tenant of ran[name]) {
-                            data.tenantDBs[tenant.name] = new Database({ address: "mongodb://localhost:27017/", name: tenant.name });//get collections in each tenant database
+                            data.tenantDBs[tenant.name] = Database({ port: '27017', name: tenant.name, local: true });//get collections in each tenant database
 
                             runTenants[tenant.name] = data.tenantDBs[tenant.name].getCollections();
                         }
