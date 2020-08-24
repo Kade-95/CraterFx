@@ -64,7 +64,7 @@ setup().then(done => {
     kerds.createServer({
         port,
         protocol,
-        domains: ['*'],
+        domains: {origins: ['*']},
         httpsOptions: {
             key: fs.readFileSync('./permissions/server.key'),
             cert: fs.readFileSync('./permissions/server.crt')
@@ -83,4 +83,5 @@ kerds.handleRequests = (req, res, form) => {
 }
 
 extra.clearEmptyApps();
-extra.automateBackup();
+// extra.automateBackup();
+extra.backup();
