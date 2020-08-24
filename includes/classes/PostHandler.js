@@ -574,11 +574,11 @@ class PostHandler {
 
     putApp(req, res, data) {
         let attributes = JSON.parse(data.attributes);
-        params.query.lastModified = new Date().getTime();
+        attributes.lastModified = new Date().getTime();
 
         if (!kerds.isset(attributes._id) || attributes._id == '') {
             delete attributes._id;
-            params.query.timeCreated = new Date().getTime();
+            attributes.timeCreated = new Date().getTime();
 
             db.insert({ collection: 'apps', query: attributes, getInserted: true }).then(result => {
                 let id = result.shift()._id;
