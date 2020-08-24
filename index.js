@@ -84,4 +84,3 @@ kerds.handleRequests = (req, res, form) => {
 
 extra.clearEmptyApps();
 // extra.automateBackup();
-extra.backup();
